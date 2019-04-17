@@ -1,45 +1,45 @@
 {
   "project_info": {
-    "project_number": "597942141151",
-    "project_id": "firebase-eyesfood"
+    "project_number": "997015551075",
+    "firebase_url": "https://extension-eyesfood-scalderon.firebaseio.com",
+    "project_id": "extension-eyesfood-scalderon",
+    "storage_bucket": "extension-eyesfood-scalderon.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:597942141151:android:16540920b2e3c799",
+        "mobilesdk_app_id": "1:997015551075:android:16540920b2e3c799",
         "android_client_info": {
           "package_name": "com.example.jonsmauricio.eyesfood"
         }
       },
       "oauth_client": [
         {
-          "client_id": "597942141151-lb8sdto0i0jolmtc8b5jajlnrgb2k7dv.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "597942141151-l9e4vi2p36gleduul5eruhhbn6bl90kv.apps.googleusercontent.com",
+          "client_id": "997015551075-nhuiepkaq811ot72p961qftsjsa6eute.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.jonsmauricio.eyesfood",
-            "certificate_hash": "d9f12a4066347d0e22031ae7047d003456656e2d"
+            "certificate_hash": "b1b228e46d1cdd689e6172ac7c24aea68c104b56"
           }
+        },
+        {
+          "client_id": "997015551075-04tftqie0bhtralfsurne1a9vm9jbr1m.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAA_9SIu_j8RyKA4YLMlaJZYNJQ-cSnaiU"
+          "current_key": "AIzaSyBybVS-OtGbbVLAZkzgsqRdS5HpLrl0TuQ"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
+          "other_platform_oauth_client": [
+            {
+              "client_id": "997015551075-04tftqie0bhtralfsurne1a9vm9jbr1m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
