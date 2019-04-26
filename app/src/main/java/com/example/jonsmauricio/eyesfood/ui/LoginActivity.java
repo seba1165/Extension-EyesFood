@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
 
     //Gmail y Facebook
     private SignInButton signInButtonGmail;
-    private LoginButton loginButtonFacebook;
+    //private LoginButton loginButtonFacebook;
     private CallbackManager callbackManager;
     private String session;
 
@@ -150,10 +150,10 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
         mSignUp = (TextView) findViewById(R.id.link_signup);
         loginProgressText = (TextView) findViewById(R.id.login_progress_text);
 
-        loginButtonFacebook = (LoginButton) findViewById(R.id.bt_login_facebook);
+        /*loginButtonFacebook = (LoginButton) findViewById(R.id.bt_login_facebook);
         loginButtonFacebook.setReadPermissions(Arrays.asList("email"));
-        loginButtonFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
+        loginButtonFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {*/
+            /*@Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d("Facebook","Success");
                 session = "Facebook";
@@ -169,7 +169,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
             public void onError(FacebookException error) {
                 Log.d("Facebook","Error");
             }
-        });
+        });*/
 
         ProfileTracker profileTracker = new ProfileTracker() {
             @Override

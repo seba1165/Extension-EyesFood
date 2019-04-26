@@ -59,7 +59,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     //IP de usach alumnos
     //private final String baseFotoAlimento = "http://158.170.214.219/api.eyesfood.cl/v1/img/food/";
-    final String baseFotoAlimento = EyesFoodApi.BASE_URL+"img/food/";
+    //final String baseFotoAlimento = EyesFoodApi.BASE_URL+"img/food/";
 
     private ItemClickListener clickListener;
 
@@ -124,7 +124,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     public void onBindViewHolder(final HistoryViewHolder viewHolder, final int i) {
         //showProgress(true);
         Picasso.with(viewHolder.imagen.getContext())
-                .load(baseFotoAlimento + items.get(i).getOfficialPhoto())
+                .load(items.get(i).getOfficialPhoto())
                 .into(viewHolder.imagen);
         viewHolder.nombre.setText(items.get(i).getName());
         viewHolder.fecha.setText("Escaneado el "+ items.get(i).getDate());

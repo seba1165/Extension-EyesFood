@@ -28,8 +28,10 @@ public interface EyesFoodApi {
     //Cambiar host por IP de tu PC para dispositivo real.
     // Esta es la ip de usach alumnos
     // public static final String BASE_URL = "http://158.170.214.219/api.eyesfood.cl/v1/";
-    //String BASE_URL = "http://192.168.0.105/api.eyesfood.cl/v1/";
-    String BASE_URL = "https://eyesfood.000webhostapp.com/api.eyesfood.cl/v1/";
+    //URL API LOCAL
+    String BASE_URL = "http://179.9.212.38/api.eyesfood.cl/v1/";
+    //URL API WEB
+    //String BASE_URL = "https://eyesfood.000webhostapp.com/api.eyesfood.cl/v1/";
 
     //Esta petición tiene un parámetro del tipo @Body que es un LoginBody llamado loginBody
     @POST("users/login")

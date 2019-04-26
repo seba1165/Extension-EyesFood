@@ -36,8 +36,11 @@ import android.widget.Toast;
 
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
+import com.example.jonsmauricio.eyesfood.data.api.OpenFoodFactsApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.Food;
 import com.example.jonsmauricio.eyesfood.data.api.model.HistoryFoodBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.Product;
+import com.example.jonsmauricio.eyesfood.data.api.model.ProductResponse;
 import com.example.jonsmauricio.eyesfood.data.api.model.ShortFood;
 import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
 import com.facebook.login.LoginManager;
@@ -51,6 +54,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.zxing.client.android.CaptureActivity;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -63,7 +67,9 @@ public class HistoryActivity extends AppCompatActivity
         implements OnClickListener, ItemClickListener, GoogleApiClient.OnConnectionFailedListener{
 
     Retrofit mRestAdapter;
+    private Retrofit mOpenRestAdapter;
     EyesFoodApi mEyesFoodApi;
+    private OpenFoodFactsApi mOpenFoodApi;
 
     //Obtengo id de Usuario y sesión
     private String userIdFinal;
@@ -100,6 +106,8 @@ public class HistoryActivity extends AppCompatActivity
 
     private Toolbar toolbar;
 
+    private ArrayList<Product> products = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,14 +131,23 @@ public class HistoryActivity extends AppCompatActivity
         progressBar = (ProgressBar) findViewById(R.id.pbMainProgress);
         emptyStateText = (TextView) findViewById(R.id.tvHistoryEmptyState);
 
-        // Crear conexión al servicio REST
+        // Crear conexión al servicio REST EyesFood
         mRestAdapter = new Retrofit.Builder()
                 .baseUrl(EyesFoodApi.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        // Crear conexión al servicio REST OpenFoodFacts
+        mOpenRestAdapter = new Retrofit.Builder()
+                .baseUrl(OpenFoodFactsApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
         // Crear conexión a la API de EyesFood
         mEyesFoodApi = mRestAdapter.create(EyesFoodApi.class);
+
+        //  Crear conexión a la API de OpenFood
+        mOpenFoodApi = mOpenRestAdapter.create(OpenFoodFactsApi.class);
 
         drawerTitle = getResources().getString(R.string.nav_history);
         // Redirección al Login
@@ -212,7 +229,6 @@ public class HistoryActivity extends AppCompatActivity
                     Log.d("myTag", "hola"+response.errorBody().toString());
                     return;
                 }
-
                 historial = response.body();
                 showHistory(historial);
             }
@@ -295,9 +311,41 @@ public class HistoryActivity extends AppCompatActivity
 
     //Muestra el historial
     //historial: Lista de alimentos en el historial
-    public void showHistory(List<ShortFood> historial) {
+    //TODO: Cambiar. Consulta Asincrona no siempre mantiene el orden en historial
+    public void showHistory(final List<ShortFood> historial) {
+        ArrayList<Call<ProductResponse>> productResponseCalls = new ArrayList<>();
+        for (ShortFood food : historial) {
+            productResponseCalls.add(mOpenFoodApi.obtenerProducto(food.getBarCode()));
+        }
+        for (Call<ProductResponse> call2 : productResponseCalls){
+            call2.enqueue(new Callback<ProductResponse>() {
+                @Override
+                public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
+                    if (response.isSuccessful()){
+                        ProductResponse productResponse = response.body();
+                        Product product = productResponse.getProduct();
+                        product.setCodigo(productResponse.getCode());
+                        Log.d("nombreEnConsulta", product.getProduct_name());
+                        products.add(product);
+                        if (products.size()==historial.size()){
+                            showHistory2();
+                        }
+                    }
+                }
+                @Override
+                public void onFailure(Call<ProductResponse> call, Throwable t) {
 
-        /*if(historial.isEmpty()){
+                }
+            });
+        }
+    }
+
+    private void showHistory2() {
+        for (int i = 0; i < historial.size(); i++) {
+            historial.get(i).setName(products.get(i).getProduct_name());
+            historial.get(i).setOfficialPhoto(products.get(i).getImage_front_url());
+        }
+         /*if(historial.isEmpty()){
             showEmptyState(true);
             showProgress(false);
             return;
@@ -360,19 +408,43 @@ public class HistoryActivity extends AppCompatActivity
     //Retorna un alimento al pinchar en el historial
     //Barcode: Código de barras del alimento a retornar
     public void loadFoodsFromHistory(String barcode) {
-        Call<Food> call = mEyesFoodApi.getFood(barcode);
+        Call<ProductResponse> call2 = mOpenFoodApi.obtenerProducto(barcode);
+        call2.enqueue(new Callback<ProductResponse>() {
+            @Override
+            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
+                if (!response.isSuccessful()) {
+                    // TODO: Procesar error de API
+                    return;
+                }
+                ProductResponse respuesta = response.body();
+                Product product = respuesta.getProduct();
+                product.setCodigo(respuesta.getCode());
+                Call<Food> call2 = mEyesFoodApi.getFood(product.getCodigo());
+                showFoodsScreen(product);
+            }
+
+            @Override
+            public void onFailure(Call<ProductResponse> call, Throwable t) {
+                noFood();
+            }
+        });
+    }
+
+    //Nuevo ShowFoods para consulta a OpenFoods
+    private void showFoodsScreen(final Product product) {
+        Call<Food> call = mEyesFoodApi.getFood(product.getCodigo());
         call.enqueue(new Callback<Food>() {
             @Override
-            public void onResponse(Call<Food> call,
-                                   Response<Food> response) {
+            public void onResponse(Call<Food> call, Response<Food> response) {
                 if (!response.isSuccessful()) {
                     // TODO: Procesar error de API
                     return;
                 }
                 //Si entro acá el alimento existe en la BD y lo obtengo
                 Food resultado = response.body();
+
                 //Muestro el alimento
-                showFoodsScreen(resultado);
+                showFoodsScreenFinal(resultado,product);
             }
 
             @Override
@@ -380,6 +452,14 @@ public class HistoryActivity extends AppCompatActivity
                 noFood();
             }
         });
+    }
+
+    private void showFoodsScreenFinal(Food resultado, Product product) {
+        Intent i = new Intent(this, FoodsActivity.class);
+        i.putExtra("Product",product);
+        i.putExtra("Alimento",resultado);
+        i.putExtra("MeGusta",like);
+        startActivity(i);
     }
 
     //Retorna un alimento

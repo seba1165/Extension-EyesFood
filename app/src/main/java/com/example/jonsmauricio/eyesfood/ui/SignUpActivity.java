@@ -1,5 +1,6 @@
 package com.example.jonsmauricio.eyesfood.ui;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import com.example.jonsmauricio.eyesfood.data.api.model.User;
 import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
 
 import java.io.IOException;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,6 +43,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private EditText etSignupName;
     private EditText etSignupSurname;
     private EditText etSignupEmail;
+    private EditText etPlannedDate;
     private EditText etSignupPassword;
     private EditText etSignupPasswordConfirm;
     Button btSignupSignun;
@@ -110,6 +114,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         etSignupName = (EditText) findViewById(R.id.et_signup_name);
         etSignupSurname = (EditText) findViewById(R.id.et_signup_surname);
         etSignupEmail = (EditText) findViewById(R.id.et_signup_email);
+        etSignupEmail = (EditText) findViewById(R.id.et_signup_email);
+        //etSignupDate = findViewById(R.id.et_signup_date);
+        etPlannedDate = (EditText) findViewById(R.id.etPlannedDate);
         etSignupPassword = (EditText) findViewById(R.id.et_signup_password);
         etSignupPasswordConfirm = (EditText) findViewById(R.id.et_signup_password_confirm);
         btSignupSignun = (Button) findViewById(R.id.bt_signup_signup);
@@ -117,6 +124,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         vwSignupProgress = findViewById(R.id.vw_signup_progress);
         vwSignupSignupForm = findViewById(R.id.vw_signup_signup_form);
 
+        etPlannedDate.setOnClickListener(this);
         btSignupSignun.setOnClickListener(this);
         tvSignupLogin.setOnClickListener(this);
     }
@@ -137,7 +145,30 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 finish();
                 break;
             }
+            case R.id.etPlannedDate:
+                showDatePickerDialog(etPlannedDate);
+                break;
         }
+    }
+
+    //Metodo para mostrar calendario en eleccion de fecha de nacimiento
+    private void showDatePickerDialog(final EditText editText) {
+        DatePickerFragment newFragment = DatePickerFragment.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                // +1 because january is zero
+                final String selectedDate = twoDigits(day) + "/" + twoDigits(month+1) + "/" + year;
+                editText.setText(selectedDate);
+            }
+        });
+        newFragment.show(getFragmentManager(), "datePicker");
+//        newFragment.show(this.getSupportFragmentManager(),"datePicker");
+
+//        newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+    }
+
+    private String twoDigits(int n) {
+        return (n<=9) ? ("0"+n) : String.valueOf(n);
     }
 
     private void attemptSignUp() {
@@ -145,6 +176,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         etSignupName.setError(null);
         etSignupSurname.setError(null);
         etSignupEmail.setError(null);
+        etPlannedDate.setError(null);
         etSignupPassword.setError(null);
         etSignupPasswordConfirm.setError(null);
 
@@ -152,6 +184,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         String name = etSignupName.getText().toString();
         String surname = etSignupSurname.getText().toString();
         String email = etSignupEmail.getText().toString();
+        String date = etPlannedDate.getText().toString();
         String password = etSignupPassword.getText().toString();
         // TODO: 19-10-2017 Usar esto para confirmar el password
         String passwordConfirm = etSignupPasswordConfirm.getText().toString();
@@ -181,6 +214,12 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             cancel = true;
         }
 
+        //Verificar si la fecha de Nacimiento tiene contenido.
+        if (TextUtils.isEmpty(date)) {
+            etPlannedDate.setError(getString(R.string.error_field_required));
+            focusView = etPlannedDate;
+            cancel = true;
+        }
         //TODO: Hacer verificaciones de los otros campos de texto
 
         if (cancel) {

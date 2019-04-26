@@ -81,6 +81,10 @@ public class ShortFood{
         return list;
     }
 
+    public void setOfficialPhoto(String officialPhoto) {
+        this.officialPhoto = officialPhoto;
+    }
+
     @Override
     public String toString(){
         return name + " - " + foodHazard + " - " + date;

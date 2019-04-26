@@ -218,5 +218,6 @@
     <string name="message_wrong_solitude_new_measure">Por favor revisa que ningún valor es 0</string>
     <string name="title_success_new_measures">Datos enviados</string>
     <string name="message_success_new_measures">Tus nuevas medidas se han registrado con éxito</string>
+    <string name="str_signup_date">Fecha de Nacimiento</string>
 
 </resources>

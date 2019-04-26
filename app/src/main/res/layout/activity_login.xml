@@ -118,14 +118,6 @@
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray"/>
 
-            <com.facebook.login.widget.LoginButton
-                android:id="@+id/bt_login_facebook"
-                android:layout_marginTop="24dp"
-                android:layout_width="267dp"
-                android:layout_height="36dp"
-                android:layout_gravity="center"
-                android:padding="12dp"/>
-
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/bt_login_gmail"
                 android:layout_width="300dp"
