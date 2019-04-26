@@ -36,14 +36,21 @@ import com.example.jonsmauricio.eyesfood.data.api.model.FoodImage;
 import com.example.jonsmauricio.eyesfood.data.api.model.HistoryFoodBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Ingredient;
 import com.example.jonsmauricio.eyesfood.data.api.model.InsertFromLikeBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.Product;
 import com.example.jonsmauricio.eyesfood.data.api.model.Recommendation;
 import com.example.jonsmauricio.eyesfood.data.api.model.ShortFood;
 import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
 import com.squareup.picasso.Picasso;
 
+import java.io.FilePermission;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -89,6 +96,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     private EyesFoodApi mEyesFoodApi;
 
     private Food Alimento;
+    private Product product;
     private int MeGusta;
 
     private Counter likesCounter;
@@ -103,7 +111,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     //IP de usach alumnos:
     //private final String baseFotoAlimento = "http://158.170.214.219/api.eyesfood.cl/v1/img/food/";
     //URL Base para cargar las fotos
-    final String baseFotoAlimento = EyesFoodApi.BASE_URL+"img/food/";
+    //final String baseFotoAlimento = EyesFoodApi.BASE_URL+"img/food/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,14 +199,17 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
         //Recibe los datos enviados por el scanner o lista
         if(b!=null)
         {
+
             Alimento = (Food) b.get("Alimento");
-            collapser.setTitle(Alimento.getName()); // Cambiar título
+            product = (Product)b.get("Product");
+            collapser.setTitle(product.getProduct_name()); // Cambiar título
             //setTitle(Nombre);
-            CodigoBarras = Alimento.getBarCode();
+            CodigoBarras = product.getCodigo();
             MeGusta = (int) b.get("MeGusta");
             Log.d("myTag","Like: "+MeGusta);
-            showFood(Alimento);
-            showNutritionFacts(Alimento);
+            //showFood(Alimento);
+            showFood(product,Alimento);
+            showNutritionFacts(product);
             loadIngredients(CodigoBarras);
         }
 
@@ -215,23 +226,55 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
 
     //Carga los datos del alimento al iniciar la pantalla
     //alimento: Alimento a cargar
-    public void showFood(Food alimento){
-
+    private void showFood(Product product, Food alimento) {
         Picasso.with(this)
-                .load(baseFotoAlimento + alimento.getOfficialPhoto())
+                .load(product.getImage_front_url())
                 .into(ivFoodPhoto);
 
-        infoGeneralNombre.setText(alimento.getName());
-        infoGeneralProducto.setText(alimento.getProductId());
+        infoGeneralNombre.setText(product.getProduct_name());
+        infoGeneralProducto.setText(product.getCategories());
         infoGeneralRating.setRating(alimento.getFoodHazard());
-        infoGeneralCodigo.append(" "+alimento.getBarCode());
-        infoGeneralMarca.append(" "+alimento.getBrandCode());
-        infoGeneralNeto.append(" "+alimento.getContent()+" "+alimento.getUnit());
-        infoGeneralFecha.append(" "+alimento.getDate());
+        infoGeneralCodigo.append(" "+product.getCodigo());
+        infoGeneralMarca.append(" "+product.getBrands());
+        infoGeneralNeto.append(" "+product.getQuantity());
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = new Date(product.getLast_modified_t()*1000);
+        infoGeneralFecha.append(" "+f.format(d));
     }
 
     //Muestra la información nutricional del alimento
-    public void showNutritionFacts(Food alimento){
+    private void showNutritionFacts(Product product) {
+        String portion = product.getServing_size();
+        porcion.append(" "+portion);
+        porcionEnvase.append(" " + Float.toString(calculatePortions(product.getQuantity(), portion)));
+    }
+
+    //Calcula la cantidad de porciones por envase
+    private float calculatePortions(String quantity, String portion) {
+        float portions = 0;
+        String[] cantidad =  quantity.split(" ");
+        List<String> porcion = separaPorcion(portion);
+        int cant = Integer.parseInt(cantidad[0]);
+        int porc = Integer.parseInt(porcion.get(0));
+        if(cant<porc){
+            portions = (cant*1000)/porc;
+        }else{
+            portions = cant/porc;
+        }
+        return portions;
+    }
+
+    //Metodo para separar el numero de la unidad de medida de la porcion
+    private List<String> separaPorcion(String portion) {
+        List<String> chunks = new LinkedList<String>();
+        Pattern VALID_PATTERN = Pattern.compile("[0-9]+|[a-z]+|[A-Z]+");
+        Matcher matcher = VALID_PATTERN.matcher(portion);
+        while (matcher.find()) {
+            chunks.add( matcher.group());
+        }
+        return chunks;
+    }
+    /*public void showNutritionFacts(Food alimento){
 
         float portion = alimento.getPortionGr();
         porcion.append(" "+alimento.getPortion());
@@ -250,7 +293,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
         setTextNutrition(alimento.getTotalSugar(), portion, azucares100, azucaresPorcion);
         setTextNutrition(alimento.getFiber(), portion, fibra100, fibraPorcion);
         setTextNutrition(alimento.getSodium(), portion, sodio100, sodioPorcion);
-    }
+    }*/
 
     public void setTextNutrition(float content, float portion, TextView tv100, TextView tvPortion){
         if(content < 0){
@@ -261,12 +304,6 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
             tv100.setText(Float.toString(content));
             tvPortion.setText(Float.toString(calculatePortion(portion, content)));
         }
-    }
-
-    //Calcula la cantidad de porciones por envase
-    public float calculatePortions(float neto, float portion){
-        float porcionesEnvase = neto/portion;
-        return porcionesEnvase;
     }
 
     //Calcula los datos por porción
