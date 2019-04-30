@@ -92,7 +92,7 @@
     <string name="additives_usage">Uso: </string>
     <string name="additives_secondary_effects">Efectos secundarios: </string>
 
-    <string name="search_hint">Buscar alimentos o aditivos</string>
+    <string name="search_hint">Buscar alimentos</string>
     <string name="title_activity_additives">Aditivos</string>
 
     <string name="dialog_no_additives">El alimento está libre de aditivos químicos</string>

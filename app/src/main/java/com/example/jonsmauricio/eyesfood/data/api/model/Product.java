@@ -1,6 +1,7 @@
 package com.example.jonsmauricio.eyesfood.data.api.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Product implements Serializable {
 
@@ -32,6 +33,8 @@ public class Product implements Serializable {
     private String image_nutrition_url;
     //Ingredientes
     private String ingredients_text;
+    //Aditivos
+    private List<String> additives_tags;
 
     public String getProduct_name() {
         return product_name;
@@ -143,5 +146,13 @@ public class Product implements Serializable {
 
     public void setImage_nutrition_url(String image_nutrition_url) {
         this.image_nutrition_url = image_nutrition_url;
+    }
+
+    public List<String> getAdditives_tags() {
+        return additives_tags;
+    }
+
+    public void setAdditives_tags(List<String> additives_tags) {
+        this.additives_tags = additives_tags;
     }
 }

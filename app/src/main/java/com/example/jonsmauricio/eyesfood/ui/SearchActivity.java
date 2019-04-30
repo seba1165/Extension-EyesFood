@@ -131,6 +131,7 @@ public class SearchActivity extends AppCompatActivity {
             public void onResponse(Call<List<Food>> call,
                                    Response<List<Food>> response) {
                 if (!response.isSuccessful()) {
+                    Log.d("myTag", "Falla en la llamada de Foods: makeQueryFoods" + response.message());
                     return;
                 }
                 resultadoAlimentos = response.body();
@@ -166,6 +167,7 @@ public class SearchActivity extends AppCompatActivity {
 
     public void showListFoods(List<Food> lista){
         int tamanoLista = lista.size();
+        //Log.d("myTag", "tamano Lista" + lista.size());
         if(tamanoLista > 0) {
             noFoods = false;
             adaptadorFoods = new ArrayAdapter<>(
@@ -295,6 +297,7 @@ public class SearchActivity extends AppCompatActivity {
     private void showFood(int like, Food currentSearch) {
         Intent i = new Intent(getApplicationContext(), FoodsActivity.class);
         i.putExtra("Alimento", currentSearch);
+        //i.putExtra("Product", product);
         i.putExtra("MeGusta", like);
         startActivity(i);
     }

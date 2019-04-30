@@ -486,7 +486,7 @@ public class HistoryActivity extends AppCompatActivity
                     return;
                 }
                 final Product product = response.body().getProduct();
-                product.setCodigo(response.body().getCode());
+                if (response.body().getProduct()!=null){product.setCodigo(response.body().getCode());}
                 //Si existe en OpenFood, se procede a ver si existe en EyesFood
                 Call<Food> call2 = mEyesFoodApi.getFood(barcode);
                 call2.enqueue(new Callback<Food>() {
@@ -522,7 +522,7 @@ public class HistoryActivity extends AppCompatActivity
     }
 
     private void createProduct(final Product product) {
-        Call<Food> call = mEyesFoodApi.newFood(new Food(product.getCodigo(), userIdFinal, 0,"" , 0));
+        Call<Food> call = mEyesFoodApi.newFood(new Food(product.getCodigo(), userIdFinal, 0,"" , 0, product.getProduct_name()));
         call.enqueue(new Callback<Food>() {
             @Override
             public void onResponse(Call<Food> call, Response<Food> response) {
@@ -588,6 +588,7 @@ public class HistoryActivity extends AppCompatActivity
     }
 
     private void showNewFoodsDialog(){
+        progressDialog.dismiss();
         Bundle bundle = new Bundle();
         bundle.putString("barCode", barCode);
         // set Fragmentclass Arguments
@@ -647,8 +648,11 @@ public class HistoryActivity extends AppCompatActivity
             //Si obtiene el código
             if (resultCode == RESULT_OK) {
                 barCode = intent.getStringExtra("SCAN_RESULT");
-                barCode = "7802920001326";
-                Log.d("myTag","Barcode = "+barCode);
+                //Mantequilla
+                //barCode = "7802920001326";
+                //Iansa cerok
+                barCode = "7801505000877";
+                //Log.d("myTag","Barcode = "+barCode);
                 progressDialog.setMessage("Cargando Producto");
                 progressDialog.show();
                 loadFoods(barCode);

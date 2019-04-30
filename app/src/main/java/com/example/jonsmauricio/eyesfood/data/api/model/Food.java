@@ -22,13 +22,16 @@ public class Food implements Serializable{
     private String date;
     @SerializedName("indiceGlicemico")
     private float glycemicIndex;
+    @SerializedName("nombreAlimento")
+    private String foodName;
 
-    public Food(String barCode, String userId, float foodHazard, String date, float glycemicIndex) {
+    public Food(String barCode, String userId, float foodHazard, String date, float glycemicIndex, String foodName) {
         this.barCode = barCode;
         this.userId = userId;
         this.foodHazard = foodHazard;
         this.date = date;
         this.glycemicIndex = glycemicIndex;
+        this.foodName = foodName;
     }
 
     public String getBarCode() {
@@ -77,5 +80,13 @@ public class Food implements Serializable{
 
     public void setGlycemicIndex(float glycemicIndex) {
         this.glycemicIndex = glycemicIndex;
+    }
+
+    public String getFoodName() {
+        return foodName;
+    }
+
+    public void setFoodName(String foodName) {
+        this.foodName = foodName;
     }
 }

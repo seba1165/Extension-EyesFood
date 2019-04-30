@@ -56,7 +56,7 @@ public class AdditiveActivity extends AppCompatActivity {
         recycler.setLayoutManager(lManager);
 
         //Crear un nuevo adaptador
-        adapter = new AdditivesAdapter(aditivo);
-        recycler.setAdapter(adapter);
+        //adapter = new AdditivesAdapter(aditivo);
+        //recycler.setAdapter(adapter);
     }
 }

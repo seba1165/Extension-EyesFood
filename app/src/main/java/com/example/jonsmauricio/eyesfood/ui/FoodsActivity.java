@@ -369,7 +369,9 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
                 .header("X-RapidAPI-Host", "vx-e-additives.p.rapidapi.com")
                 .header("X-RapidAPI-Key", "0709b89ebdmshda793b75aa8303fp17aa1djsn675c30a85042")
                 .asJson();*/
-        Call<List<Additive>> call = mEyesFoodApi.getFullAdditives(barcode);
+        //A futuro consultar api de aditivos
+        //https://rapidapi.com/petarov/api/e-additives
+        /*Call<List<Additive>> call = mEyesFoodApi.getFullAdditives(barcode);
         call.enqueue(new Callback<List<Additive>>() {
             @Override
             public void onResponse(Call<List<Additive>> call,
@@ -385,14 +387,11 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
             public void onFailure(Call<List<Additive>> call, Throwable t) {
                 Log.d("Falla", "Falla en la llamada de aditivos: loadAdditives");
             }
-        });
-    }
-
-    public void showAdditives(List<Additive> listaAditivos){
-        if(listaAditivos.size()>0) {
+        });*/
+        Log.d("myTag", "Aditivos " + product.getAdditives_tags().toString());
+        if(product.getAdditives_tags().size()>0) {
             Intent intent = new Intent(this, AdditivesActivity.class);
             Bundle args = new Bundle();
-            args.putSerializable("Aditivos",(Serializable) listaAditivos);
             intent.putExtra("BUNDLE",args);
             intent.putExtra("Alimento",Alimento);
             intent.putExtra("Product",product);

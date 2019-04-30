@@ -33,7 +33,6 @@ public class AdditivesActivity extends AppCompatActivity {
     private AdditivesAdapter adapter;
     private RecyclerView.LayoutManager lManager;
 
-    private List<Additive> listaAditivos;
     private Food Alimento;
     private Product product;
     private int MeGusta;
@@ -51,20 +50,19 @@ public class AdditivesActivity extends AppCompatActivity {
         Bundle b = i.getExtras();
 
         Bundle args = i.getBundleExtra("BUNDLE");
-        listaAditivos = (List<Additive>) args.getSerializable("Aditivos");
 
         if(b != null){
             Alimento = (Food) b.get("Alimento");
             product = (Product) b.get("Product");
             MeGusta = (int) b.get("MeGusta");
             setTitle(product.getProduct_name());
-            showAdditives(listaAditivos);
+            showAdditives();
         }
     }
 
     //Muestra los aditivos
     //historial: Lista de aditivos del alimento
-    public void showAdditives(List<Additive> lista) {
+    public void showAdditives() {
 
         // Obtener el Recycler
         recycler = (RecyclerView) findViewById(R.id.additivesRecycler);
@@ -75,7 +73,7 @@ public class AdditivesActivity extends AppCompatActivity {
         recycler.setLayoutManager(lManager);
 
         //Crear un nuevo adaptador
-        adapter = new AdditivesAdapter(lista);
+        adapter = new AdditivesAdapter(product.getAdditives_tags(), this);
         recycler.setAdapter(adapter);
     }
 
@@ -100,4 +98,6 @@ public class AdditivesActivity extends AppCompatActivity {
 
         return(super.onOptionsItemSelected(item));
     }
+
+
 }
