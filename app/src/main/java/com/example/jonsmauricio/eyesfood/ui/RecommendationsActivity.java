@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.model.Food;
+import com.example.jonsmauricio.eyesfood.data.api.model.Product;
 import com.example.jonsmauricio.eyesfood.data.api.model.Recommendation;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class RecommendationsActivity extends AppCompatActivity{
     private Food Alimento;
     private int MeGusta;
     private ArrayList<Recommendation> recommendations;
+    private Product product;
 
 
     @Override
@@ -44,8 +46,9 @@ public class RecommendationsActivity extends AppCompatActivity{
 
         if(b != null){
             Alimento = (Food) b.get("Alimento");
+            product = (Product) b.get("Product");
             MeGusta = (int) b.get("MeGusta");
-            setTitle(Alimento.getName());
+            setTitle(product.getProduct_name());
         }
     }
 
@@ -86,6 +89,7 @@ public class RecommendationsActivity extends AppCompatActivity{
             case android.R.id.home:
                 Intent i = new Intent(this, FoodsActivity.class);
                 i.putExtra("Alimento", Alimento);
+                i.putExtra("Product",product);
                 i.putExtra("MeGusta", MeGusta);
                 startActivity(i);
                 return(true);

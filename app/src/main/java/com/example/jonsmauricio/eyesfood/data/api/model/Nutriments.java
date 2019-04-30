@@ -20,9 +20,9 @@ public class Nutriments  implements Serializable {
 
     //Acidos Grasos Saturados
     @SerializedName("saturated-fat_100g")
-    private String saturatedFat100g;
+    private float saturatedFat100g;
     @SerializedName("saturated-fat_serving")
-    private String saturatedFatServing;
+    private float saturatedFatServing;
     @SerializedName("saturated-fat_unit")
     private String saturatedFatUnit;
 
@@ -60,6 +60,11 @@ public class Nutriments  implements Serializable {
     private float carbohydrates_serving;
     private String carbohydrates_unit;
 
+    //Proteinas
+    private float proteins_100g;
+    private float proteins_serving;
+    private String proteins_unit;
+
     //Azucares Totales
     private float sugars_100g;
     private float sugars_serving;
@@ -74,9 +79,6 @@ public class Nutriments  implements Serializable {
     private float sodium_100g;
     private float sodium_serving;
     private String sodium_unit;
-
-    //Ingredientes
-    private String ingredients_text;
 
     //Aditivos
     private ArrayList<String> additives_original_tags;
@@ -257,13 +259,6 @@ public class Nutriments  implements Serializable {
         this.sodium_unit = sodium_unit;
     }
 
-    public String getIngredients_text() {
-        return ingredients_text;
-    }
-
-    public void setIngredients_text(String ingredients_text) {
-        this.ingredients_text = ingredients_text;
-    }
 
     public ArrayList<String> getAdditives_original_tags() {
         return additives_original_tags;
@@ -273,19 +268,19 @@ public class Nutriments  implements Serializable {
         this.additives_original_tags = additives_original_tags;
     }
 
-    public String getSaturatedFat100g() {
+    public float getSaturatedFat100g() {
         return saturatedFat100g;
     }
 
-    public void setSaturatedFat100g(String saturatedFat100g) {
+    public void setSaturatedFat100g(float saturatedFat100g) {
         this.saturatedFat100g = saturatedFat100g;
     }
 
-    public String getSaturatedFatServing() {
+    public float getSaturatedFatServing() {
         return saturatedFatServing;
     }
 
-    public void setSaturatedFatServing(String saturatedFatServing) {
+    public void setSaturatedFatServing(float saturatedFatServing) {
         this.saturatedFatServing = saturatedFatServing;
     }
 
@@ -367,5 +362,29 @@ public class Nutriments  implements Serializable {
 
     public void setTrans_fat_unit(String trans_fat_unit) {
         this.trans_fat_unit = trans_fat_unit;
+    }
+
+    public float getProteins_100g() {
+        return proteins_100g;
+    }
+
+    public void setProteins_100g(float proteins_100g) {
+        this.proteins_100g = proteins_100g;
+    }
+
+    public float getProteins_serving() {
+        return proteins_serving;
+    }
+
+    public void setProteins_serving(float proteins_serving) {
+        this.proteins_serving = proteins_serving;
+    }
+
+    public String getProteins_unit() {
+        return proteins_unit;
+    }
+
+    public void setProteins_unit(String proteins_unit) {
+        this.proteins_unit = proteins_unit;
     }
 }

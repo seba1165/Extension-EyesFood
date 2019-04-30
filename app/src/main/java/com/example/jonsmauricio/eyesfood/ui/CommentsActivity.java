@@ -30,6 +30,7 @@ import com.example.jonsmauricio.eyesfood.data.api.model.Comment;
 import com.example.jonsmauricio.eyesfood.data.api.model.CommentBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Food;
 import com.example.jonsmauricio.eyesfood.data.api.model.NewFoodBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.Product;
 import com.example.jonsmauricio.eyesfood.data.api.model.Recommendation;
 import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
 import com.squareup.picasso.Picasso;
@@ -65,6 +66,7 @@ public class CommentsActivity extends AppCompatActivity {
     private int MeGusta;
 
     final String baseFotoUsuario = EyesFoodApi.BASE_URL+"img/users/";
+    private Product product;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +113,9 @@ public class CommentsActivity extends AppCompatActivity {
 
         if(b != null){
             Alimento = (Food) b.get("Alimento");
+            product = (Product) b.get("Product");
             MeGusta = (int) b.get("MeGusta");
-            setTitle(Alimento.getName());
+            setTitle(product.getProduct_name());
             CodigoBarras = Alimento.getBarCode();
         }
 
@@ -215,6 +218,7 @@ public class CommentsActivity extends AppCompatActivity {
             case android.R.id.home:
                 Intent i = new Intent(this, FoodsActivity.class);
                 i.putExtra("Alimento", Alimento);
+                i.putExtra("Product",product);
                 i.putExtra("MeGusta", MeGusta);
                 startActivity(i);
                 return(true);

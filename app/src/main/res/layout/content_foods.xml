@@ -34,7 +34,7 @@ android:paddingTop="24dp">
                 android:id="@+id/tvFoodsInfoGeneralNombre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvFoodsInfoGeneralTitulo"/>
+                android:layout_below="@id/tvFoodsInfoGeneralTitulo" />
 
             <RatingBar
                 android:id="@+id/rbFoodsRating"
@@ -44,41 +44,41 @@ android:paddingTop="24dp">
                 android:numStars="5"
                 android:stepSize="0.1"
                 android:isIndicator="true"
-                android:layout_below="@id/tvFoodsInfoGeneralNombre"/>
+                android:layout_below="@id/tvFoodsInfoGeneralNombre" />
 
             <TextView
                 android:id="@+id/tvFoodsInfoGeneralProducto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rbFoodsRating"/>
+                android:layout_below="@id/rbFoodsRating" />
 
             <TextView
                 android:id="@+id/tvFoodsInfoGeneralCodigo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/foods_info_general_codigo"
-                android:layout_below="@id/tvFoodsInfoGeneralProducto"/>
+                android:layout_below="@id/tvFoodsInfoGeneralProducto" />
 
             <TextView
                 android:id="@+id/tvFoodsInfoGeneralMarca"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/foods_info_general_marca"
-                android:layout_below="@id/tvFoodsInfoGeneralCodigo"/>
+                android:layout_below="@id/tvFoodsInfoGeneralCodigo"
+                android:text="@string/foods_info_general_marca" />
 
             <TextView
                 android:id="@+id/tvFoodsInfoGeneralNeto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/foods_info_general_neto"
-                android:layout_below="@id/tvFoodsInfoGeneralMarca"/>
+                android:layout_below="@id/tvFoodsInfoGeneralMarca"
+                android:text="@string/foods_info_general_neto" />
 
             <TextView
                 android:id="@+id/tvFoodsInfoGeneralFecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/foods_info_general_fecha"
-                android:layout_below="@id/tvFoodsInfoGeneralNeto"/>
+                android:layout_below="@id/tvFoodsInfoGeneralNeto"
+                android:text="@string/foods_info_general_fecha" />
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

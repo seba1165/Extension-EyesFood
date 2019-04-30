@@ -14,6 +14,7 @@ import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.Additive;
 import com.example.jonsmauricio.eyesfood.data.api.model.Food;
+import com.example.jonsmauricio.eyesfood.data.api.model.Product;
 import com.example.jonsmauricio.eyesfood.data.api.model.Recommendation;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class AdditivesActivity extends AppCompatActivity {
 
     private List<Additive> listaAditivos;
     private Food Alimento;
+    private Product product;
     private int MeGusta;
 
     @Override
@@ -53,8 +55,9 @@ public class AdditivesActivity extends AppCompatActivity {
 
         if(b != null){
             Alimento = (Food) b.get("Alimento");
+            product = (Product) b.get("Product");
             MeGusta = (int) b.get("MeGusta");
-            setTitle(Alimento.getName());
+            setTitle(product.getProduct_name());
             showAdditives(listaAditivos);
         }
     }
@@ -89,6 +92,7 @@ public class AdditivesActivity extends AppCompatActivity {
             case android.R.id.home:
                 Intent i = new Intent(this, FoodsActivity.class);
                 i.putExtra("Alimento", Alimento);
+                i.putExtra("Product", product);
                 i.putExtra("MeGusta", MeGusta);
                 startActivity(i);
                 return(true);

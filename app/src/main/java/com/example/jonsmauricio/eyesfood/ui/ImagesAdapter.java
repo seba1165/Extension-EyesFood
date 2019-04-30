@@ -24,7 +24,7 @@ import java.util.List;
 
 public class ImagesAdapter extends BaseAdapter {
     private ArrayList<FoodImage> foodImagesList;
-    final String baseFotoAlimento = EyesFoodApi.BASE_URL+"img/uploads/";
+    //final String baseFotoAlimento = EyesFoodApi.BASE_URL+"img/uploads/";
     private Context context;
 
     public ImagesAdapter(Context context, ArrayList<FoodImage> lista) {
@@ -61,7 +61,7 @@ public class ImagesAdapter extends BaseAdapter {
 
         final FoodImage item = getItem(position);
         Picasso.with(imagenAlimento.getContext())
-                .load(baseFotoAlimento + item.getPath())
+                .load(item.getPath())
                 .resize(800,800)
                 .into(imagenAlimento);
         footer.setText(item.getFecha());

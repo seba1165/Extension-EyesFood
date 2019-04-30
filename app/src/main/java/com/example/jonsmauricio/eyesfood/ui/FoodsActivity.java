@@ -36,19 +36,25 @@ import com.example.jonsmauricio.eyesfood.data.api.model.FoodImage;
 import com.example.jonsmauricio.eyesfood.data.api.model.HistoryFoodBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Ingredient;
 import com.example.jonsmauricio.eyesfood.data.api.model.InsertFromLikeBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.Nutriments;
 import com.example.jonsmauricio.eyesfood.data.api.model.Product;
 import com.example.jonsmauricio.eyesfood.data.api.model.Recommendation;
 import com.example.jonsmauricio.eyesfood.data.api.model.ShortFood;
 import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
+import com.rapidapi.rapidconnect.Argument;
+import com.rapidapi.rapidconnect.RapidApiConnect;
 import com.squareup.picasso.Picasso;
 
 import java.io.FilePermission;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -84,8 +90,6 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     //Para los botonos
     Button additives, recommendations, images, like, dislike;
 
-    private List<Ingredient> listaIngredientes;
-    private List<Ingredient> listaAditivos;
     private List<Additive> listaAditivosFull;
     private List<Recommendation> listaRecomendaciones;
     private ArrayList<FoodImage> listaImagenes;
@@ -244,9 +248,37 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
 
     //Muestra la información nutricional del alimento
     private void showNutritionFacts(Product product) {
+        Nutriments nutriments = product.getNutriments();
         String portion = product.getServing_size();
         porcion.append(" "+portion);
         porcionEnvase.append(" " + Float.toString(calculatePortions(product.getQuantity(), portion)));
+        setTextNutrition(nutriments.getEnergy_100g(), nutriments.getEnergy_serving(), energia100, energiaPorcion);
+        setTextNutrition2(nutriments.getProteins_100g(), nutriments.getProteins_serving(), proteinas100, proteinasPorcion);
+        setTextNutrition2(nutriments.getFat_100g(), nutriments.getFat_serving(), grasaTotal100, grasaTotalPorcion);
+        setTextNutrition2(nutriments.getSaturatedFat100g(), nutriments.getSaturatedFatServing(), grasaSaturada100, grasaSaturadaPorcion);
+        setTextNutrition2(nutriments.getMonounsaturated_fat_100g(), nutriments.getMonounsaturated_fat_serving(), grasaMono100, grasaMonoPorcion);
+        setTextNutrition2(nutriments.getPolyunsaturated_fat_100g(), nutriments.getPolyunsaturated_fat_serving(), grasaPoli100, grasaPoliPorcion);
+        setTextNutrition2(nutriments.getTrans_fat_100g(), nutriments.getTrans_fat_serving(), grasaTrans100, grasaTransPorcion);
+        setTextNutrition2(nutriments.getCholesterol_100g(), nutriments.getCholesterol_serving(), colesterol100, colesterolPorcion);
+        setTextNutrition2(nutriments.getCholesterol_100g(), nutriments.getCarbohydrates_serving(), hidratos100, hidratosPorcion);
+        setTextNutrition2(nutriments.getSugars_100g(), nutriments.getSugars_serving(), azucares100, azucaresPorcion);
+        setTextNutrition2(nutriments.getFiber_100g(), nutriments.getFiber_serving(), fibra100, fibraPorcion);
+        setTextNutrition2(nutriments.getSodium_100g(), nutriments.getSodium_serving(), sodio100, sodioPorcion);
+    }
+
+    private void setTextNutrition2(float content100, float portion, TextView tv100, TextView tvPortion) {
+        DecimalFormat formato1 = new DecimalFormat("0.000");
+        if (Float.toString(content100).length()>4){
+            tv100.setText(formato1.format(content100));
+        }else{
+            tv100.setText(Float.toString(content100));
+        }
+
+        if (Float.toString(portion).length()>4){
+            tvPortion.setText(formato1.format(portion));
+        }else{
+            tvPortion.setText(Float.toString(portion));
+        }
     }
 
     //Calcula la cantidad de porciones por envase
@@ -254,8 +286,14 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
         float portions = 0;
         String[] cantidad =  quantity.split(" ");
         List<String> porcion = separaPorcion(portion);
-        int cant = Integer.parseInt(cantidad[0]);
         int porc = Integer.parseInt(porcion.get(0));
+        int cant;
+        if (cantidad.length==2){
+            cant = Integer.parseInt(cantidad[0]);
+        }else{
+            List<String> cantidad2 = separaPorcion(quantity);
+            cant = Integer.parseInt(cantidad2.get(0));
+        }
         if(cant<porc){
             portions = (cant*1000)/porc;
         }else{
@@ -274,147 +312,17 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
         }
         return chunks;
     }
-    /*public void showNutritionFacts(Food alimento){
 
-        float portion = alimento.getPortionGr();
-        porcion.append(" "+alimento.getPortion());
-        porcion.append(" ("+portion+" "+alimento.getUnit()+")");
-        porcionEnvase.append(" " + Float.toString(calculatePortions(alimento.getContent(), portion)));
-
-        setTextNutrition(alimento.getEnergy(), portion, energia100, energiaPorcion);
-        setTextNutrition(alimento.getProtein(), portion, proteinas100, proteinasPorcion);
-        setTextNutrition(alimento.getTotalFat(), portion, grasaTotal100, grasaTotalPorcion);
-        setTextNutrition(alimento.getSaturatedFat(), portion, grasaSaturada100, grasaSaturadaPorcion);
-        setTextNutrition(alimento.getMonoFat(), portion, grasaMono100, grasaMonoPorcion);
-        setTextNutrition(alimento.getPoliFat(), portion, grasaPoli100, grasaPoliPorcion);
-        setTextNutrition(alimento.getTransFat(), portion, grasaTrans100, grasaTransPorcion);
-        setTextNutrition(alimento.getCholesterol(), portion, colesterol100, colesterolPorcion);
-        setTextNutrition(alimento.getCarbo(), portion, hidratos100, hidratosPorcion);
-        setTextNutrition(alimento.getTotalSugar(), portion, azucares100, azucaresPorcion);
-        setTextNutrition(alimento.getFiber(), portion, fibra100, fibraPorcion);
-        setTextNutrition(alimento.getSodium(), portion, sodio100, sodioPorcion);
-    }*/
-
-    public void setTextNutrition(float content, float portion, TextView tv100, TextView tvPortion){
-        if(content < 0){
-            tv100.setText("*");
-            tvPortion.setText("*");
-        }
-        else{
-            tv100.setText(Float.toString(content));
-            tvPortion.setText(Float.toString(calculatePortion(portion, content)));
-        }
-    }
-
-    //Calcula los datos por porción
-    public float calculatePortion(float portion, float data100){
-        float resultado = (data100*portion)/100;
-        return resultado;
+    public void setTextNutrition(String content100, String portion, TextView tv100, TextView tvPortion){
+        tv100.setText(content100);
+        tvPortion.setText(portion);
     }
 
     //Carga los ingredientes del alimento
     //token: Autorización
     //barcode: Código de barras del alimento
     public void loadIngredients(String barcode) {
-        Call<List<Ingredient>> call = mEyesFoodApi.getIngredients(barcode);
-        call.enqueue(new Callback<List<Ingredient>>() {
-            @Override
-            public void onResponse(Call<List<Ingredient>> call,
-                                   Response<List<Ingredient>> response) {
-                if (!response.isSuccessful()) {
-                    return;
-                }
-                listaIngredientes = response.body();
-                loadAdditives(CodigoBarras, listaIngredientes);
-            }
-
-            @Override
-            //Si no existe la URL
-            public void onFailure(Call<List<Ingredient>> call, Throwable t) {
-                //Log.d("Falla Retrofit", t.getMessage());
-            }
-        });
-    }
-
-    //Carga los aditivos del alimento
-    //listaIngredientes: Lista obtenida en load ingredients
-    public void loadAdditives(String barcode, final List<Ingredient> listaIngredientes) {
-        Call<List<Ingredient>> call = mEyesFoodApi.getAdditives(barcode);
-        call.enqueue(new Callback<List<Ingredient>>() {
-            @Override
-            public void onResponse(Call<List<Ingredient>> call,
-                                   Response<List<Ingredient>> response) {
-                if (!response.isSuccessful()) {
-                    return;
-                }
-                listaAditivos = response.body();
-                //String cantidadAditivos = String.valueOf(listaAditivos.size());
-                //additives.setText("Aditivos ("+cantidadAditivos+")");
-                //Une las listas de ingredientes y de aditivos para efectuar el orden
-                List<Ingredient> listaFinal = unirListas(listaIngredientes, listaAditivos);
-                mostrarIngredientes(listaFinal);
-            }
-
-            @Override
-            public void onFailure(Call<List<Ingredient>> call, Throwable t) {
-
-            }
-        });
-    }
-
-    //Muestra los ingredientes ordenados en pantalla, incluye aditivos
-    public void mostrarIngredientes(List <Ingredient> lista){
-        int tamano = lista.size();
-        int i = 0;
-        String ingredientes = "";
-        while(i < tamano){
-            if(i==tamano-1) {
-                ingredientes = ingredientes + lista.get(i).getIngredient() + ".";
-            }
-            else {
-                ingredientes = ingredientes + lista.get(i).getIngredient() + ", ";
-            }
-            i++;
-        }
-        tvIngredientes.setText(ingredientes);
-    }
-
-    //Une las listas de ingredientes y aditivos para realizar el orden
-    public List<Ingredient> unirListas(List<Ingredient> listaIngredientes, List<Ingredient> listaAditivos){
-
-        List <Ingredient> listaIngredientesFinal = new ArrayList<>();
-        int ingredientes = listaIngredientes.size();
-        int aditivos = listaAditivos.size();
-        int indiceIngredientes = 0;
-        int indiceAditivos = 0;
-
-        while (indiceIngredientes < ingredientes || indiceAditivos < aditivos) {
-            if(indiceIngredientes == ingredientes){
-                while(indiceAditivos < aditivos){
-                    listaIngredientesFinal.add(listaAditivos.get(indiceAditivos));
-                    indiceAditivos++;
-                }
-            }
-            else if(indiceAditivos == aditivos){
-                while(indiceIngredientes < ingredientes){
-                    listaIngredientesFinal.add(listaIngredientes.get(indiceIngredientes));
-                    indiceIngredientes++;
-                }
-            }
-            else {
-                int ordenIngrediente = listaIngredientes.get(indiceIngredientes).getOrder();
-                int ordenAditivo = listaAditivos.get(indiceAditivos).getOrder();
-
-                if (ordenIngrediente < ordenAditivo) {
-                    listaIngredientesFinal.add(listaIngredientes.get(indiceIngredientes));
-                    indiceIngredientes++;
-                } else {
-                    listaIngredientesFinal.add(listaAditivos.get(indiceAditivos));
-                    indiceAditivos++;
-                }
-            }
-        }
-        return listaIngredientesFinal;
+        tvIngredientes.setText(product.getIngredients_text());
     }
 
     //Carga las recomendaciones del alimento
@@ -445,6 +353,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
             intent.putExtra("BUNDLE",args);
 
             intent.putExtra("Alimento",Alimento);
+            intent.putExtra("Product",product);
             intent.putExtra("MeGusta",MeGusta);
             startActivity(intent);
         }
@@ -455,6 +364,11 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
 
     //Carga la lista de aditivos completa
     public void loadAdditivesFull(String barcode){
+        //RapidApiConnect connect = new RapidApiConnect("default-application_3751123", "0709b89ebdmshda793b75aa8303fp17aa1djsn675c30a85042");
+        /*HttpResponse<JsonNode> response = Unirest.get("https://vx-e-additives.p.rapidapi.com/additives/270?locale=en")
+                .header("X-RapidAPI-Host", "vx-e-additives.p.rapidapi.com")
+                .header("X-RapidAPI-Key", "0709b89ebdmshda793b75aa8303fp17aa1djsn675c30a85042")
+                .asJson();*/
         Call<List<Additive>> call = mEyesFoodApi.getFullAdditives(barcode);
         call.enqueue(new Callback<List<Additive>>() {
             @Override
@@ -480,8 +394,8 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
             Bundle args = new Bundle();
             args.putSerializable("Aditivos",(Serializable) listaAditivos);
             intent.putExtra("BUNDLE",args);
-
             intent.putExtra("Alimento",Alimento);
+            intent.putExtra("Product",product);
             intent.putExtra("MeGusta",MeGusta);
             startActivity(intent);
         }
@@ -492,7 +406,18 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
 
     //Carga las recomendaciones del alimento
     public void loadImages(String barcode) {
-        Call<ArrayList<FoodImage>> call = mEyesFoodApi.getImages(barcode);
+        listaImagenes = new ArrayList<>();
+        FoodImage nueva = new FoodImage(product.getImage_front_url());
+        FoodImage nueva2 = new FoodImage(product.getImage_ingredients_url());
+        FoodImage nueva3 = new FoodImage(product.getImage_nutrition_url());
+
+        listaImagenes.add(nueva);
+        listaImagenes.add(nueva2);
+        listaImagenes.add(nueva3);
+
+        showImages(listaImagenes);
+
+        /*Call<ArrayList<FoodImage>> call = mEyesFoodApi.getImages(barcode);
         call.enqueue(new Callback<ArrayList<FoodImage>>() {
             @Override
             public void onResponse(Call<ArrayList<FoodImage>> call,
@@ -507,7 +432,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onFailure(Call<ArrayList<FoodImage>> call, Throwable t) {
             }
-        });
+        });*/
     }
 
     public void showImages(ArrayList<FoodImage> lista){
@@ -518,6 +443,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
             intent.putExtra("BUNDLE",args);
 
             intent.putExtra("Alimento",Alimento);
+            intent.putExtra("Product",product);
             intent.putExtra("MeGusta",MeGusta);
             startActivity(intent);
         }
@@ -553,6 +479,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
             intent.putExtra("BUNDLE",args);
 
             intent.putExtra("Alimento",Alimento);
+            intent.putExtra("Product",product);
             intent.putExtra("MeGusta",MeGusta);
             startActivity(intent);
     }

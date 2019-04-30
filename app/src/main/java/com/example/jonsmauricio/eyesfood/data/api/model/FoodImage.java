@@ -31,6 +31,10 @@ public class FoodImage implements Serializable{
         this.fecha = fecha;
     }
 
+    public FoodImage(String path) {
+        this.path = path;
+    }
+
     public long getId() {
         return id;
     }
@@ -54,4 +58,5 @@ public class FoodImage implements Serializable{
     public String getFecha() {
         return fecha;
     }
+
 }

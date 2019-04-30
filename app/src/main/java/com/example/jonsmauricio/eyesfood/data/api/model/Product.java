@@ -26,6 +26,12 @@ public class Product implements Serializable {
     private String image_front_url;
     //Foto Chica
     private String image_thumb_url;
+    //Foto Ingredientes
+    private String image_ingredients_url;
+    //Foto Nutricion
+    private String image_nutrition_url;
+    //Ingredientes
+    private String ingredients_text;
 
     public String getProduct_name() {
         return product_name;
@@ -113,5 +119,29 @@ public class Product implements Serializable {
 
     public void setImage_thumb_url(String image_thumb_url) {
         this.image_thumb_url = image_thumb_url;
+    }
+
+    public String getIngredients_text() {
+        return ingredients_text;
+    }
+
+    public void setIngredients_text(String ingredients_text) {
+        this.ingredients_text = ingredients_text;
+    }
+
+    public String getImage_ingredients_url() {
+        return image_ingredients_url;
+    }
+
+    public void setImage_ingredients_url(String image_ingredients_url) {
+        this.image_ingredients_url = image_ingredients_url;
+    }
+
+    public String getImage_nutrition_url() {
+        return image_nutrition_url;
+    }
+
+    public void setImage_nutrition_url(String image_nutrition_url) {
+        this.image_nutrition_url = image_nutrition_url;
     }
 }

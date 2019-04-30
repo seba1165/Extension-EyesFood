@@ -278,7 +278,7 @@ public class SearchActivity extends AppCompatActivity {
                 like = shortFood.getLike();
                 Log.d("myTag", "antes de show");
                 Log.d("myTag", String.valueOf(like));
-                Log.d("myTag", currentSearch.getName());
+                //Log.d("myTag", currentSearch.getName());
                 showFood(like, currentSearch);
             }
 

@@ -2,30 +2,31 @@ package com.example.jonsmauricio.eyesfood.ui;
 
 import android.Manifest;
 import android.animation.Animator;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
@@ -84,8 +85,10 @@ public class HistoryActivity extends AppCompatActivity
     private HistoryAdapter adapter;
     private RecyclerView.LayoutManager lManager;
     private List<ShortFood> historial;
+    private List<Product> products;
 
     private ProgressBar progressBar;
+    private ProgressDialog progressDialog;
     private TextView emptyStateText;
     private ImageView avatar;
     private String drawerTitle;
@@ -105,8 +108,6 @@ public class HistoryActivity extends AppCompatActivity
     final String baseFotoUsuario = EyesFoodApi.BASE_URL+"img/users/";
 
     private Toolbar toolbar;
-
-    private ArrayList<Product> products = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +130,7 @@ public class HistoryActivity extends AppCompatActivity
 
         recycler = (RecyclerView) findViewById(R.id.reciclador);
         progressBar = (ProgressBar) findViewById(R.id.pbMainProgress);
+        progressDialog= new ProgressDialog(this);
         emptyStateText = (TextView) findViewById(R.id.tvHistoryEmptyState);
 
         // Crear conexión al servicio REST EyesFood
@@ -263,6 +265,7 @@ public class HistoryActivity extends AppCompatActivity
         });
     }
 
+    //Destacados
     public void loadFavorites(String userId){
         Call<List<ShortFood>> call = mEyesFoodApi.getFoodsFavorites(userId);
         call.enqueue(new Callback<List<ShortFood>>() {
@@ -311,10 +314,10 @@ public class HistoryActivity extends AppCompatActivity
 
     //Muestra el historial
     //historial: Lista de alimentos en el historial
-    //TODO: Cambiar. Consulta Asincrona no siempre mantiene el orden en historial
-    public void showHistory(final List<ShortFood> historial) {
+    public void showHistory(final List<ShortFood> historial2) {
+        products = new ArrayList<>();
         ArrayList<Call<ProductResponse>> productResponseCalls = new ArrayList<>();
-        for (ShortFood food : historial) {
+        for (ShortFood food : historial2) {
             productResponseCalls.add(mOpenFoodApi.obtenerProducto(food.getBarCode()));
         }
         for (Call<ProductResponse> call2 : productResponseCalls){
@@ -325,10 +328,10 @@ public class HistoryActivity extends AppCompatActivity
                         ProductResponse productResponse = response.body();
                         Product product = productResponse.getProduct();
                         product.setCodigo(productResponse.getCode());
-                        Log.d("nombreEnConsulta", product.getProduct_name());
+                        //Log.d("nombreEnConsulta", product.getProduct_name());
                         products.add(product);
-                        if (products.size()==historial.size()){
-                            showHistory2();
+                        if (products.size()==historial2.size()){
+                            showHistory2(historial2,products);
                         }
                     }
                 }
@@ -340,12 +343,16 @@ public class HistoryActivity extends AppCompatActivity
         }
     }
 
-    private void showHistory2() {
+    private void showHistory2(List<ShortFood> historial, List<Product> products) {
         for (int i = 0; i < historial.size(); i++) {
-            historial.get(i).setName(products.get(i).getProduct_name());
-            historial.get(i).setOfficialPhoto(products.get(i).getImage_front_url());
+            for (int j= 0; j < products.size(); j++){
+                if (historial.get(i).getBarCode().equals(products.get(j).getCodigo())){
+                    historial.get(i).setName(products.get(j).getProduct_name());
+                    historial.get(i).setOfficialPhoto(products.get(j).getImage_front_url());
+                }
+            }
         }
-         /*if(historial.isEmpty()){
+/*         if(historial.isEmpty()){
             showEmptyState(true);
             showProgress(false);
             return;
@@ -408,6 +415,8 @@ public class HistoryActivity extends AppCompatActivity
     //Retorna un alimento al pinchar en el historial
     //Barcode: Código de barras del alimento a retornar
     public void loadFoodsFromHistory(String barcode) {
+        progressDialog.setMessage("Cargando Producto");
+        progressDialog.show();
         Call<ProductResponse> call2 = mOpenFoodApi.obtenerProducto(barcode);
         call2.enqueue(new Callback<ProductResponse>() {
             @Override
@@ -419,7 +428,6 @@ public class HistoryActivity extends AppCompatActivity
                 ProductResponse respuesta = response.body();
                 Product product = respuesta.getProduct();
                 product.setCodigo(respuesta.getCode());
-                Call<Food> call2 = mEyesFoodApi.getFood(product.getCodigo());
                 showFoodsScreen(product);
             }
 
@@ -449,6 +457,7 @@ public class HistoryActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<Food> call, Throwable t) {
+                progressDialog.dismiss();
                 noFood();
             }
         });
@@ -459,32 +468,102 @@ public class HistoryActivity extends AppCompatActivity
         i.putExtra("Product",product);
         i.putExtra("Alimento",resultado);
         i.putExtra("MeGusta",like);
+        progressDialog.dismiss();
         startActivity(i);
     }
 
     //Retorna un alimento
     //Token: Token de autorización
     //Barcode: Código de barras del alimento a retornar
-    public void loadFoods(String barcode) {
-        Call<Food> call = mEyesFoodApi.getFood(barcode);
-        call.enqueue(new Callback<Food>() {
+    public void loadFoods(final String barcode) {
+        Call<ProductResponse> call = mOpenFoodApi.obtenerProducto(barcode);
+        call.enqueue(new Callback<ProductResponse>() {
             @Override
-            public void onResponse(Call<Food> call,
-                                   Response<Food> response) {
+            public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
                 if (!response.isSuccessful()) {
                     // TODO: Procesar error de API
+                    Log.d("myTag", "Error api OpenFood");
                     return;
                 }
-                //Si entro acá el alimento existe en la BD y lo obtengo
-                Food resultado = response.body();
-                //Veo si está en el historial
-                isFoodInHistory(userIdFinal, resultado);
-                //Obtengo el like
+                final Product product = response.body().getProduct();
+                product.setCodigo(response.body().getCode());
+                //Si existe en OpenFood, se procede a ver si existe en EyesFood
+                Call<Food> call2 = mEyesFoodApi.getFood(barcode);
+                call2.enqueue(new Callback<Food>() {
+                    @Override
+                    public void onResponse(Call<Food> call, Response<Food> response) {
+                        if (!response.isSuccessful()) {
+                            // TODO: Procesar error de API
+                            Log.d("myTag", "Error: API EYESFOOD");
+                            return;
+                        }
+                        //Si el producto existe en BD EyesFood, se obtiene
+                        Log.d("myTag", "Nombre Producto: "+product.getProduct_name());
+                        isFoodInHistory(userIdFinal, product);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Food> call, Throwable t) {
+                        //Si existe en OpenFood pero no en EyesFood, se crea
+                        if (product==null){
+                            Log.d("myTag", "No existe producto en OpenFoods: ");
+                            noFood();
+                        }else{
+                            Log.d("myTag", "Existe: "+product.getProduct_name());
+                            createProduct(product);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<ProductResponse> call, Throwable t) { noFood(); }
+        });
+    }
+
+    private void createProduct(final Product product) {
+        Call<Food> call = mEyesFoodApi.newFood(new Food(product.getCodigo(), userIdFinal, 0,"" , 0));
+        call.enqueue(new Callback<Food>() {
+            @Override
+            public void onResponse(Call<Food> call, Response<Food> response) {
+                if (!response.isSuccessful()) {
+                    Log.d("myTag", "Falla en ingreso" + response.message());
+                    return;
+                }
+                Log.d("myTag", "Ingreso");
+                //Si se ingresa a EyesFood, se procede a ingresar al historial
+                isFoodInHistory(userIdFinal,product);
             }
 
             @Override
             public void onFailure(Call<Food> call, Throwable t) {
-                noFood();
+                Log.d("Falla Retrofit", "Falla en new food solitude");
+                Log.d("Falla", t.getMessage());
+            }
+        });
+    }
+
+    //Comprueba si el alimento consultado está en el historial del usuario
+    private void isFoodInHistory(final String userIdFinal, final Product product) {
+        Call<ShortFood> call = mEyesFoodApi.isInHistory(userIdFinal, product.getCodigo());
+        call.enqueue(new Callback<ShortFood>() {
+            @Override
+            public void onResponse(Call<ShortFood> call, Response<ShortFood> response) {
+                if (!response.isSuccessful()) {
+                    Log.d("myTag", "Mala respuesta. " + response.toString());
+                    return;
+                }
+                //El alimento está en el historial
+                //El alimento no está en ninguna lista, lista = 0, lo inserto
+                Log.d("myTag", "Ya existe en el historial");
+                showFoodsScreen(product);
+            }
+
+            @Override
+            public void onFailure(Call<ShortFood> call, Throwable t) {
+                //El alimento no está y lo inserto
+                Log.d("myTag", "No esta, lo inserto");
+                insertFood(userIdFinal, product);
             }
         });
     }
@@ -526,15 +605,6 @@ public class HistoryActivity extends AppCompatActivity
         transaction.add(android.R.id.content, newFragment).addToBackStack(null).commit();
     }
 
-    //Envía los datos del alimento escaneado a la activity que va a mostrar esos datos
-    //resultado: Alimento a mostrar
-    public void showFoodsScreen(Food resultado){
-        Intent i = new Intent(this, FoodsActivity.class);
-        i.putExtra("Alimento",resultado);
-        i.putExtra("MeGusta",like);
-        startActivity(i);
-    }
-
     //Pide el permiso para acceder a la cámara
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -571,12 +641,16 @@ public class HistoryActivity extends AppCompatActivity
     }
 
     //Procesa lo obtenido por el escáner
+    //TODO: quitar barcode de mantequilla para scanner
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == 0) {
             //Si obtiene el código
             if (resultCode == RESULT_OK) {
                 barCode = intent.getStringExtra("SCAN_RESULT");
+                barCode = "7802920001326";
                 Log.d("myTag","Barcode = "+barCode);
+                progressDialog.setMessage("Cargando Producto");
+                progressDialog.show();
                 loadFoods(barCode);
             }
             //Si no obtiene el código
@@ -588,51 +662,21 @@ public class HistoryActivity extends AppCompatActivity
         }
     }
 
-    //Comprueba si el alimento consultado está en el historial del usuario
-    public void isFoodInHistory(String userId, final Food alimento){
-        Call<ShortFood> call = mEyesFoodApi.isInHistory(userId, alimento.getBarCode());
-        call.enqueue(new Callback<ShortFood>() {
-            @Override
-            public void onResponse(Call<ShortFood> call,
-                                   Response<ShortFood> response) {
-                if (!response.isSuccessful()) {
-                    return;
-                }
-                //El alimento está en el historial
-                //El alimento no está en ninguna lista, lista = 0, lo inserto
-                if(response.body().getList() == 0){
-                    //Actualizar a 1 el escaneo
-                    modifyScan(userIdFinal, alimento.getBarCode());
-                }
-                //El alimento está en la lista de escaneo o en escaneo y subidos
-                else{
-                    updateHistory(userIdFinal, alimento.getBarCode());
-                }
-                ShortFood shortFood = response.body();
-                like = shortFood.getLike();
-                showFoodsScreen(alimento);
-
-            }
-
-            @Override
-            public void onFailure(Call<ShortFood> call, Throwable t) {
-                //El alimento no está y lo inserto
-                insertFood(userIdFinal, alimento.getBarCode());
-            }
-        });
-    }
-
     //Inserta un alimento en el historial
-    public void insertFood(String userId, String barcode){
-        Call<Food> call = mEyesFoodApi.insertInHistory(new HistoryFoodBody(userId, barcode));
+    public void insertFood(String userId, final Product barcode){
+        Call<Food> call = mEyesFoodApi.insertInHistory(new HistoryFoodBody(userIdFinal, barcode.getCodigo()));
+        //Call<Food> call = mEyesFoodApi.insertNoScan(new InsertFromLikeBody(userId, barcode,0));
         call.enqueue(new Callback<Food>() {
             @Override
             public void onResponse(Call<Food> call, Response<Food> response) {
                 if (!response.isSuccessful()) {
+                    Log.d("myTag", "Mala respuesta en insertFood" + response.toString());
                     return;
                 }
                 else {
-                    Log.d("myTag", "Éxito en insertFood");
+                    Log.d("myTag", "Mostrar Producto leido");
+                    progressDialog.setMessage("Cargando Producto");
+                    showFoodsScreen(barcode);
                 }
             }
             @Override
@@ -664,7 +708,7 @@ public class HistoryActivity extends AppCompatActivity
         });
     }
 
-    //Actualiza la fecha de un alimento en el historial
+    /*//Actualiza la fecha de un alimento en el historial
     public void updateHistory(String userId, String barcode){
         Call<ShortFood> call = mEyesFoodApi.modifyHistory(userId, barcode);
         call.enqueue(new Callback<ShortFood>() {
@@ -684,7 +728,7 @@ public class HistoryActivity extends AppCompatActivity
                 return;
             }
         });
-    }
+    }*/
 
     @Override
     public void onBackPressed() {

@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.model.Food;
 import com.example.jonsmauricio.eyesfood.data.api.model.FoodImage;
+import com.example.jonsmauricio.eyesfood.data.api.model.Product;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,7 @@ public class ImagesDetailActivity extends AppCompatActivity {
     ArrayList<FoodImage> listaImagenes = new ArrayList<FoodImage>();
     private Food Alimento;
     private int MeGusta;
+    private Product product;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +51,9 @@ public class ImagesDetailActivity extends AppCompatActivity {
         if(b != null){
             indiceActual = (int) b.get("indice");
             Alimento = (Food) b.get("Alimento");
+            product = (Product) b.get("Product");
             MeGusta = (int) b.get("MeGusta");
-            setTitle(Alimento.getName());
+            setTitle(product.getProduct_name());
         }
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this, listaImagenes);
@@ -105,6 +108,7 @@ public class ImagesDetailActivity extends AppCompatActivity {
                 intent.putExtra("BUNDLE",args);
 
                 intent.putExtra("Alimento", Alimento);
+                intent.putExtra("Product", product);
                 intent.putExtra("MeGusta", MeGusta);
                 startActivity(intent);
                 return(true);

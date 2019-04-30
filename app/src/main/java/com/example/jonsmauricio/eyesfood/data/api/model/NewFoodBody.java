@@ -78,4 +78,8 @@ public class NewFoodBody {
         this.ingredients = ingredients;
         this.date = date;
     }
+
+    public NewFoodBody(String codigo) {
+        this.barcode = codigo;
+    }
 }

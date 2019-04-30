@@ -29,7 +29,7 @@ public interface EyesFoodApi {
     // Esta es la ip de usach alumnos
     // public static final String BASE_URL = "http://158.170.214.219/api.eyesfood.cl/v1/";
     //URL API LOCAL
-    String BASE_URL = "http://179.9.212.38/api.eyesfood.cl/v1/";
+    String BASE_URL = "http://190.22.162.162/api.eyesfood.cl/v1/";
     //URL API WEB
     //String BASE_URL = "https://eyesfood.000webhostapp.com/api.eyesfood.cl/v1/";
 
@@ -77,7 +77,7 @@ public interface EyesFoodApi {
     Call<List<ShortFood>> getFoodsRejected(@Path("userId") String userId);
 
     //Petición que inserta un alimento en el historial
-    @POST("history")
+    @POST("history/create")
     Call<Food> insertInHistory(@Body HistoryFoodBody historyFoodBody);
 
     //Petición que actualiza un alimento en el historial
@@ -111,6 +111,10 @@ public interface EyesFoodApi {
     //Inserta una solicitud de nuevo alimento
     @POST("foods/new")
     Call<Food> newFoodSolitude(@Body NewFoodBody newFoodBody);
+
+    ////inserta un alimento
+    @POST("foods/create")
+    Call<Food> newFood(@Body Food newfood);
 
     //Inserta una solicitud de edición de alimento
     @POST("foods/complaint")
