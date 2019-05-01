@@ -2,10 +2,6 @@ package com.example.jonsmauricio.eyesfood.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
-import android.support.constraint.solver.widgets.Snapshot;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,24 +12,20 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
+import com.example.jonsmauricio.eyesfood.data.api.OpenFoodFactsApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.Additive;
 import com.example.jonsmauricio.eyesfood.data.api.model.Food;
-import com.example.jonsmauricio.eyesfood.data.api.model.SearchResult;
+import com.example.jonsmauricio.eyesfood.data.api.model.Product;
+import com.example.jonsmauricio.eyesfood.data.api.model.ProductResponse;
 import com.example.jonsmauricio.eyesfood.data.api.model.ShortFood;
 import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
-import org.json.JSONArray;
-import org.w3c.dom.Text;
-
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,7 +38,9 @@ public class SearchActivity extends AppCompatActivity {
     MaterialSearchView searchView;
     private String query;
     Retrofit mRestAdapter;
+    Retrofit mOpenRestAdapter;
     EyesFoodApi mEyesFoodApi;
+    OpenFoodFactsApi mOpenFoodApi;
     private List<Food> resultadoAlimentos;
     private List<Additive> resultadoAditivos;
     private ListView resultFoods;
@@ -89,8 +83,15 @@ public class SearchActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        mOpenRestAdapter = new Retrofit.Builder()
+                .baseUrl(OpenFoodFactsApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
         // Crear conexión a la API de EyesFood
         mEyesFoodApi = mRestAdapter.create(EyesFoodApi.class);
+
+        mOpenFoodApi = mOpenRestAdapter.create(OpenFoodFactsApi.class);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -140,18 +141,21 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Food>> call, Throwable t) {
-                Log.d("Falla", "Falla en la llamada de aditivos: loadAdditives");
+                Log.d("myTag", "Falla en la llamada de aditivos: loadAdditives");
             }
         });
     }
 
     public void makeQueryAdditives(String query){
-        Call<List<Additive>> call = mEyesFoodApi.getAdditivesQuery(query);
+        resultadoAditivos = new ArrayList<>();
+        showListAdditives(resultadoAditivos);
+        /*Call<List<Additive>> call = mEyesFoodApi.getAdditivesQuery(query);
         call.enqueue(new Callback<List<Additive>>() {
             @Override
             public void onResponse(Call<List<Additive>> call,
                                    Response<List<Additive>> response) {
                 if (!response.isSuccessful()) {
+                    Log.d("myTag", "Falla en la llamada de aditivos: makeQueryAdditives");
                     return;
                 }
                 resultadoAditivos = response.body();
@@ -160,9 +164,9 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Additive>> call, Throwable t) {
-                Log.d("Falla", "Falla en la llamada de aditivos: loadAdditives");
+                Log.d("myTag", "Falla en la llamada de aditivos: loadAdditives");
             }
-        });
+        });*/
     }
 
     public void showListFoods(List<Food> lista){
@@ -281,7 +285,25 @@ public class SearchActivity extends AppCompatActivity {
                 Log.d("myTag", "antes de show");
                 Log.d("myTag", String.valueOf(like));
                 //Log.d("myTag", currentSearch.getName());
-                showFood(like, currentSearch);
+                Call<ProductResponse> call2 = mOpenFoodApi.obtenerProducto(barcode);
+                call2.enqueue(new Callback<ProductResponse>() {
+                    @Override
+                    public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
+                        if (!response.isSuccessful()) {
+                            // TODO: Procesar error de API
+                            return;
+                        }
+                        ProductResponse respuesta = response.body();
+                        Product product = respuesta.getProduct();
+                        product.setCodigo(respuesta.getCode());
+                        showFood(like, currentSearch, product);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProductResponse> call, Throwable t) {
+
+                    }
+                });
             }
 
             @Override
@@ -289,15 +311,33 @@ public class SearchActivity extends AppCompatActivity {
                 //El alimento no está
                 like=0;
                 flag = 1;
-                showFood(like, currentSearch);
+                Call<ProductResponse> call2 = mOpenFoodApi.obtenerProducto(barcode);
+                call2.enqueue(new Callback<ProductResponse>() {
+                    @Override
+                    public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
+                        if (!response.isSuccessful()) {
+                            // TODO: Procesar error de API
+                            return;
+                        }
+                        ProductResponse respuesta = response.body();
+                        Product product = respuesta.getProduct();
+                        product.setCodigo(respuesta.getCode());
+                        showFood(like, currentSearch, product);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProductResponse> call, Throwable t) {
+
+                    }
+                });
             }
         });
     }
 
-    private void showFood(int like, Food currentSearch) {
+    private void showFood(int like, Food currentSearch, Product product) {
         Intent i = new Intent(getApplicationContext(), FoodsActivity.class);
         i.putExtra("Alimento", currentSearch);
-        //i.putExtra("Product", product);
+        i.putExtra("Product", product);
         i.putExtra("MeGusta", like);
         startActivity(i);
     }

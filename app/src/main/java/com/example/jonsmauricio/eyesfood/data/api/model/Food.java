@@ -89,4 +89,9 @@ public class Food implements Serializable{
     public void setFoodName(String foodName) {
         this.foodName = foodName;
     }
+
+    @Override
+    public String toString() {
+        return this.foodName;
+    }
 }

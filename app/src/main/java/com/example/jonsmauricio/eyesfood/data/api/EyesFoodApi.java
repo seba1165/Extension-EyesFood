@@ -29,7 +29,7 @@ public interface EyesFoodApi {
     // Esta es la ip de usach alumnos
     // public static final String BASE_URL = "http://158.170.214.219/api.eyesfood.cl/v1/";
     //URL API LOCAL
-    String BASE_URL = "http://190.22.227.76/api.eyesfood.cl/v1/";
+    String BASE_URL = "http://192.168.1.121/api.eyesfood.cl/v1/";
     String ADDITIVE_URL = "https://cl.openfoodfacts.org/aditivo/";
     //URL API WEB
     //String BASE_URL = "https://eyesfood.000webhostapp.com/api.eyesfood.cl/v1/";
