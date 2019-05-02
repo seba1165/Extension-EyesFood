@@ -281,7 +281,7 @@ public class ComplaintDialogFragment extends DialogFragment {
     public void sendComplaint(){
         Call<Food> call = mEyesFoodApi.newFoodComplaint(new NewFoodBody(userIdFinal, barCode, Nombre, Producto, Marca,
                 Neto, Porcion, PorcionUnit, Energia, Proteinas, GrasaTotal, GrasaSat, GrasaMono, GrasaPoli, GrasaTrans,
-                Colesterol, Hidratos, Azucares, Fibra, Sodio, Ingredientes, Date));
+                Colesterol, Hidratos, Azucares, Fibra, Sodio, Ingredientes, Date, "4"));
         call.enqueue(new Callback<Food>() {
             @Override
             public void onResponse(Call<Food> call, Response<Food> response) {

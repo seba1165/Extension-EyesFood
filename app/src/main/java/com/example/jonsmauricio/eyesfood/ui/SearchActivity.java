@@ -67,13 +67,13 @@ public class SearchActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         searchView = (MaterialSearchView) findViewById(R.id.search_view_search);
-        resultFoods = (ListView) findViewById(R.id.lvResultFoods);
+        resultFoods = (ListView) findViewById(R.id.lvResultPendientes);
         resultAdditives = (ListView) findViewById(R.id.lvResultAdditives);
         searchProgress = findViewById(R.id.pbSearchProgress);
         searchProgressText = (TextView) findViewById(R.id.tvSearchProgressText);
         searchEmptyState = (TextView) findViewById(R.id.tvSearchEmptyState);
-        searchFoodsHeader = (TextView) findViewById(R.id.tvSearchFoodsHeader);
-        searchAdditivesHeader = (TextView) findViewById(R.id.tvSearchAdditivesHeader);
+        searchFoodsHeader = (TextView) findViewById(R.id.tvPendientesHeader);
+        searchAdditivesHeader = (TextView) findViewById(R.id.tvAceptadosHeader);
 
         userIdFinal = SessionPrefs.get(this).getUserId();
 

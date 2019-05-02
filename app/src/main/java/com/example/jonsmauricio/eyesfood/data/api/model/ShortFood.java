@@ -16,7 +16,7 @@ public class ShortFood{
     private String userId;
     @SerializedName("codigoBarras")
     private String barCode;
-    @SerializedName("nombre")
+    @SerializedName("nombreAlimento")
     private String name;
     @SerializedName("peligroAlimento")
     private float foodHazard;
@@ -87,6 +87,6 @@ public class ShortFood{
 
     @Override
     public String toString(){
-        return name + " - " + foodHazard + " - " + date;
+        return name + " - " + " - " + date;
     }
 }

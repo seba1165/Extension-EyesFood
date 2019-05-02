@@ -136,6 +136,16 @@
         <activity
             android:name="com.google.zxing.client.android.CaptureActivity"
                 android:screenOrientation="sensorLandscape" />
+
+        <activity
+            android:name=".ui.UploadActivity"
+            android:label="@string/title_activity_upload"
+            android:parentActivityName=".ui.HistoryActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jonsmauricio.eyesfood.ui.HistoryActivity" />
+        </activity>
     </application>
 
 </manifest>

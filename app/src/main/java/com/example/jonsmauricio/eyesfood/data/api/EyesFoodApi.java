@@ -29,7 +29,7 @@ public interface EyesFoodApi {
     // Esta es la ip de usach alumnos
     // public static final String BASE_URL = "http://158.170.214.219/api.eyesfood.cl/v1/";
     //URL API LOCAL
-    String BASE_URL = "http://192.168.1.121/api.eyesfood.cl/v1/";
+    String BASE_URL = "http://190.22.171.15/api.eyesfood.cl/v1/";
     String ADDITIVE_URL = "https://cl.openfoodfacts.org/aditivo/";
     //URL API WEB
     //String BASE_URL = "https://eyesfood.000webhostapp.com/api.eyesfood.cl/v1/";
@@ -56,6 +56,14 @@ public interface EyesFoodApi {
     //Petición que retorna las recomendaciones de un alimento mediante su código de barras
     @GET("foods/{barcode}/recommendations")
     Call<List<Recommendation>> getRecommendations(@Path("barcode") String barcode);
+
+    //Petición que retorna los alimentos pendientes de subida de un usuario
+    @GET("foods/{userId}/new")
+    Call<List<NewFoodBody>> getNewFoods(@Path("userId") String userId);
+
+    //Petición que retorna los alimentos creados por el usuario y aceptados
+    @GET("foods/{userId}/create")
+    Call<List<ShortFood>> getNewFoodsAccepted(@Path("userId") String userId);
 
     //Petición que consulta si el usuario tiene un alimento en su historial de escaneo
     @GET("history/{userId}/{barcode}")

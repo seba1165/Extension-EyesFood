@@ -11,15 +11,15 @@
     android:layout_below="@+id/toolbarSearch">
 
     <TextView
-    android:id="@+id/tvPendientesHeader"
-    style="@style/Base.TextAppearance.AppCompat.Widget.PopupMenu.Header"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/search_foods_header"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"/>
+        android:id="@+id/tvPendientesHeader"
+        style="@style/Base.TextAppearance.AppCompat.Widget.PopupMenu.Header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingTop="8dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp"
+        android:text="@string/pendientes_header" />
 
     <ListView
         android:id="@+id/lvResultPendientes"
@@ -28,24 +28,23 @@
         android:layout_below="@+id/tvPendientesHeader">
     </ListView>
 
-   <TextView
+    <TextView
         android:id="@+id/tvAceptadosHeader"
         style="@style/Base.TextAppearance.AppCompat.Widget.PopupMenu.Header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/search_additives_header"
+        android:layout_below="@id/lvResultPendientes"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
         android:paddingTop="8dp"
+        android:paddingRight="16dp"
         android:paddingBottom="8dp"
-       android:layout_below="@id/lvResultPendientes"/>
+        android:text="@string/aceptados_header" />
 
     <ListView
-        android:id="@+id/lvResultAdditives"
+        android:id="@+id/lvResultAceptados"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvAceptadosHeader">
-    </ListView>
+        android:layout_below="@+id/tvAceptadosHeader"></ListView>
 
     <TextView
         android:id="@+id/tvSearchProgressText"

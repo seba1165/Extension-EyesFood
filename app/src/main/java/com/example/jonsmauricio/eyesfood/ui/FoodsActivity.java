@@ -36,6 +36,7 @@ import com.example.jonsmauricio.eyesfood.data.api.model.FoodImage;
 import com.example.jonsmauricio.eyesfood.data.api.model.HistoryFoodBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Ingredient;
 import com.example.jonsmauricio.eyesfood.data.api.model.InsertFromLikeBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.NewFoodBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Nutriments;
 import com.example.jonsmauricio.eyesfood.data.api.model.Product;
 import com.example.jonsmauricio.eyesfood.data.api.model.Recommendation;
@@ -90,7 +91,6 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     //Para los botonos
     Button additives, recommendations, images, like, dislike;
 
-    private List<Additive> listaAditivosFull;
     private List<Recommendation> listaRecomendaciones;
     private ArrayList<FoodImage> listaImagenes;
     private List<Comment> listaComentarios;
@@ -101,6 +101,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
 
     private Food Alimento;
     private Product product;
+    private NewFoodBody pendiente;
     private int MeGusta;
 
     private Counter likesCounter;
@@ -206,17 +207,23 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
 
             Alimento = (Food) b.get("Alimento");
             product = (Product)b.get("Product");
-            collapser.setTitle(product.getProduct_name()); // Cambiar título
-            //setTitle(Nombre);
-            CodigoBarras = product.getCodigo();
-            MeGusta = (int) b.get("MeGusta");
-            Log.d("myTag","Like: "+MeGusta);
+            pendiente = (NewFoodBody) b.get("pendiente");
+            if (Alimento==null && product == null){
+                collapser.setTitle(pendiente.getName());
+                CodigoBarras = pendiente.getBarcode();
+            }else{
+                collapser.setTitle(product.getProduct_name()); // Cambiar título
+                //setTitle(Nombre);
+                CodigoBarras = product.getCodigo();
+                MeGusta = (int) b.get("MeGusta");
+                Log.d("myTag","Like: "+MeGusta);
+            }
             //showFood(Alimento);
-            showFood(product,Alimento);
-            showNutritionFacts(product);
-            loadIngredients(CodigoBarras);
         }
 
+        showFood(product,Alimento);
+        showNutritionFacts(product);
+        loadIngredients();
         getLikesCount(CodigoBarras, like);
         getDisLikesCount(CodigoBarras, dislike);
 
@@ -231,39 +238,67 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     //Carga los datos del alimento al iniciar la pantalla
     //alimento: Alimento a cargar
     private void showFood(Product product, Food alimento) {
-        Picasso.with(this)
-                .load(product.getImage_front_url())
-                .into(ivFoodPhoto);
+        if (product==null || alimento==null){
+            infoGeneralNombre.setText(pendiente.getName());
+            infoGeneralProducto.setText(pendiente.getProduct());
+            //infoGeneralRating.setRating(alimento.getFoodHazard());
+            infoGeneralCodigo.append(" "+pendiente.getBarcode());
+            infoGeneralMarca.append(" "+pendiente.getBrand());
+            infoGeneralNeto.append(" "+pendiente.getContent());
+            //SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //Date d = new Date(pendiente.getDate()*1000);
+            infoGeneralFecha.setText("Fecha Solicitud: "+pendiente.getDate());
+        }else{
+            Picasso.with(this)
+                    .load(product.getImage_front_url())
+                    .into(ivFoodPhoto);
 
-        infoGeneralNombre.setText(product.getProduct_name());
-        infoGeneralProducto.setText(product.getCategories());
-        infoGeneralRating.setRating(alimento.getFoodHazard());
-        infoGeneralCodigo.append(" "+product.getCodigo());
-        infoGeneralMarca.append(" "+product.getBrands());
-        infoGeneralNeto.append(" "+product.getQuantity());
-        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d = new Date(product.getLast_modified_t()*1000);
-        infoGeneralFecha.append(" "+f.format(d));
+            infoGeneralNombre.setText(product.getProduct_name());
+            infoGeneralProducto.setText(product.getCategories());
+            infoGeneralRating.setRating(alimento.getFoodHazard());
+            infoGeneralCodigo.append(" "+product.getCodigo());
+            infoGeneralMarca.append(" "+product.getBrands());
+            infoGeneralNeto.append(" "+product.getQuantity());
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date d = new Date(product.getLast_modified_t()*1000);
+            infoGeneralFecha.append(" "+f.format(d));
+        }
     }
 
     //Muestra la información nutricional del alimento
     private void showNutritionFacts(Product product) {
-        Nutriments nutriments = product.getNutriments();
-        String portion = product.getServing_size();
-        porcion.append(" "+portion);
-        porcionEnvase.append(" " + Float.toString(calculatePortions(product.getQuantity(), portion)));
-        setTextNutrition(nutriments.getEnergy_100g(), nutriments.getEnergy_serving(), energia100, energiaPorcion);
-        setTextNutrition2(nutriments.getProteins_100g(), nutriments.getProteins_serving(), proteinas100, proteinasPorcion);
-        setTextNutrition2(nutriments.getFat_100g(), nutriments.getFat_serving(), grasaTotal100, grasaTotalPorcion);
-        setTextNutrition2(nutriments.getSaturatedFat100g(), nutriments.getSaturatedFatServing(), grasaSaturada100, grasaSaturadaPorcion);
-        setTextNutrition2(nutriments.getMonounsaturated_fat_100g(), nutriments.getMonounsaturated_fat_serving(), grasaMono100, grasaMonoPorcion);
-        setTextNutrition2(nutriments.getPolyunsaturated_fat_100g(), nutriments.getPolyunsaturated_fat_serving(), grasaPoli100, grasaPoliPorcion);
-        setTextNutrition2(nutriments.getTrans_fat_100g(), nutriments.getTrans_fat_serving(), grasaTrans100, grasaTransPorcion);
-        setTextNutrition2(nutriments.getCholesterol_100g(), nutriments.getCholesterol_serving(), colesterol100, colesterolPorcion);
-        setTextNutrition2(nutriments.getCholesterol_100g(), nutriments.getCarbohydrates_serving(), hidratos100, hidratosPorcion);
-        setTextNutrition2(nutriments.getSugars_100g(), nutriments.getSugars_serving(), azucares100, azucaresPorcion);
-        setTextNutrition2(nutriments.getFiber_100g(), nutriments.getFiber_serving(), fibra100, fibraPorcion);
-        setTextNutrition2(nutriments.getSodium_100g(), nutriments.getSodium_serving(), sodio100, sodioPorcion);
+        if (product == null){
+            porcion.append(pendiente.getPortion());
+            setTextNutrition(pendiente.getEnergy(), "", energia100, energiaPorcion);
+            setTextNutrition(pendiente.getProtein(), "", proteinas100, proteinasPorcion);
+            setTextNutrition(pendiente.getTotalFat(), "", grasaTotal100, grasaTotalPorcion);
+            setTextNutrition(pendiente.getSaturatedFat(), "", grasaSaturada100, grasaSaturadaPorcion);
+            setTextNutrition(pendiente.getMonoFat(), "", grasaMono100, grasaMonoPorcion);
+            setTextNutrition(pendiente.getPoliFat(), "", grasaPoli100, grasaPoliPorcion);
+            setTextNutrition(pendiente.getTransFat(), "", grasaTrans100, grasaTransPorcion);
+            setTextNutrition(pendiente.getCholesterol(), "", colesterol100, colesterolPorcion);
+            setTextNutrition(pendiente.getCarbo(), "", hidratos100, hidratosPorcion);
+            setTextNutrition(pendiente.getTotalSugar(), "", azucares100, azucaresPorcion);
+            setTextNutrition(pendiente.getFyber(), "", fibra100, fibraPorcion);
+            setTextNutrition(pendiente.getSodium(), "", sodio100, sodioPorcion);
+        }else{
+            Nutriments nutriments = product.getNutriments();
+            String portion = product.getServing_size();
+            porcion.append(" "+portion);
+            porcionEnvase.append(" " + Float.toString(calculatePortions(product.getQuantity(), portion)));
+            setTextNutrition(nutriments.getEnergy_100g(), nutriments.getEnergy_serving(), energia100, energiaPorcion);
+            setTextNutrition2(nutriments.getProteins_100g(), nutriments.getProteins_serving(), proteinas100, proteinasPorcion);
+            setTextNutrition2(nutriments.getFat_100g(), nutriments.getFat_serving(), grasaTotal100, grasaTotalPorcion);
+            setTextNutrition2(nutriments.getSaturatedFat100g(), nutriments.getSaturatedFatServing(), grasaSaturada100, grasaSaturadaPorcion);
+            setTextNutrition2(nutriments.getMonounsaturated_fat_100g(), nutriments.getMonounsaturated_fat_serving(), grasaMono100, grasaMonoPorcion);
+            setTextNutrition2(nutriments.getPolyunsaturated_fat_100g(), nutriments.getPolyunsaturated_fat_serving(), grasaPoli100, grasaPoliPorcion);
+            setTextNutrition2(nutriments.getTrans_fat_100g(), nutriments.getTrans_fat_serving(), grasaTrans100, grasaTransPorcion);
+            setTextNutrition2(nutriments.getCholesterol_100g(), nutriments.getCholesterol_serving(), colesterol100, colesterolPorcion);
+            setTextNutrition2(nutriments.getCarbohydrates_100g(), nutriments.getCarbohydrates_serving(), hidratos100, hidratosPorcion);
+            setTextNutrition2(nutriments.getSugars_100g(), nutriments.getSugars_serving(), azucares100, azucaresPorcion);
+            setTextNutrition2(nutriments.getFiber_100g(), nutriments.getFiber_serving(), fibra100, fibraPorcion);
+            setTextNutrition2(nutriments.getSodium_100g(), nutriments.getSodium_serving(), sodio100, sodioPorcion);
+        }
     }
 
     private void setTextNutrition2(float content100, float portion, TextView tv100, TextView tvPortion) {
@@ -321,8 +356,12 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     //Carga los ingredientes del alimento
     //token: Autorización
     //barcode: Código de barras del alimento
-    public void loadIngredients(String barcode) {
-        tvIngredientes.setText(product.getIngredients_text());
+    public void loadIngredients() {
+        if (product == null){
+            tvIngredientes.setText(pendiente.getIngredients());
+        }else{
+            tvIngredientes.setText(product.getIngredients_text());
+        }
     }
 
     //Carga las recomendaciones del alimento
@@ -415,23 +454,6 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
         listaImagenes.add(nueva3);
 
         showImages(listaImagenes);
-
-        /*Call<ArrayList<FoodImage>> call = mEyesFoodApi.getImages(barcode);
-        call.enqueue(new Callback<ArrayList<FoodImage>>() {
-            @Override
-            public void onResponse(Call<ArrayList<FoodImage>> call,
-                                   Response<ArrayList<FoodImage>> response) {
-                if (!response.isSuccessful()) {
-                    return;
-                }
-                listaImagenes = response.body();
-                showImages(listaImagenes);
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<FoodImage>> call, Throwable t) {
-            }
-        });*/
     }
 
     public void showImages(ArrayList<FoodImage> lista){

@@ -40,6 +40,7 @@ import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
 import com.example.jonsmauricio.eyesfood.data.api.OpenFoodFactsApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.Food;
 import com.example.jonsmauricio.eyesfood.data.api.model.HistoryFoodBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.NewFoodBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Product;
 import com.example.jonsmauricio.eyesfood.data.api.model.ProductResponse;
 import com.example.jonsmauricio.eyesfood.data.api.model.ShortFood;
@@ -85,6 +86,7 @@ public class HistoryActivity extends AppCompatActivity
     private HistoryAdapter adapter;
     private RecyclerView.LayoutManager lManager;
     private List<ShortFood> historial;
+    private List<NewFoodBody> pendientes;
     private List<Product> products;
 
     private ProgressBar progressBar;
@@ -104,8 +106,6 @@ public class HistoryActivity extends AppCompatActivity
     private com.getbase.floatingactionbutton.FloatingActionButton fabProfileEdit;
 
     private int like;
-
-    final String baseFotoUsuario = EyesFoodApi.BASE_URL+"img/users/";
 
     private Toolbar toolbar;
 
@@ -206,7 +206,7 @@ public class HistoryActivity extends AppCompatActivity
         }
         else if(title.equals(getResources().getString(R.string.nav_uploads))){
             //Llama a la función que carga el historial de subidos
-            loadUploads(userId);
+//            loadUploads(userId);
         }
         else if(title.equals(getResources().getString(R.string.nav_favorites))){
             //Llama a la función que carga los destacados
@@ -238,29 +238,6 @@ public class HistoryActivity extends AppCompatActivity
             @Override
             public void onFailure(Call<List<ShortFood>> call, Throwable t) {
                 Log.d("Falla", "Falla en la llamada a historial: loadHistoryFoods"+t.getMessage());
-            }
-        });
-    }
-
-    public void loadUploads(String userId){
-        Call<List<ShortFood>> call = mEyesFoodApi.getFoodsUploads(userId);
-        call.enqueue(new Callback<List<ShortFood>>() {
-            @Override
-            public void onResponse(Call<List<ShortFood>> call,
-                                   Response<List<ShortFood>> response) {
-                if (!response.isSuccessful()) {
-                    // TODO: Procesar error de API
-                    Log.d("myTag", "hola");
-                    return;
-                }
-
-                historial = response.body();
-                showHistory(historial);
-            }
-
-            @Override
-            public void onFailure(Call<List<ShortFood>> call, Throwable t) {
-                Log.d("Falla", "Falla en la llamada a historial: loadHistoryFoods");
             }
         });
     }
@@ -517,12 +494,15 @@ public class HistoryActivity extends AppCompatActivity
             }
 
             @Override
-            public void onFailure(Call<ProductResponse> call, Throwable t) { noFood(); }
+            public void onFailure(Call<ProductResponse> call, Throwable t) {
+                progressDialog.dismiss();
+                noFood();
+            }
         });
     }
 
     private void createProduct(final Product product) {
-        Call<Food> call = mEyesFoodApi.newFood(new Food(product.getCodigo(), userIdFinal, 0,"" , 0, product.getProduct_name()));
+        Call<Food> call = mEyesFoodApi.newFood(new Food(product.getCodigo(), null, 0,"" , 0, product.getProduct_name()));
         call.enqueue(new Callback<Food>() {
             @Override
             public void onResponse(Call<Food> call, Response<Food> response) {
@@ -651,7 +631,7 @@ public class HistoryActivity extends AppCompatActivity
                 //Mantequilla
                 //barCode = "7802920001326";
                 //Iansa cerok
-                barCode = "7801505000877";
+                //barCode = "7801505000877";
                 //Log.d("myTag","Barcode = "+barCode);
                 progressDialog.setMessage("Cargando Producto");
                 progressDialog.show();
@@ -850,7 +830,13 @@ public class HistoryActivity extends AppCompatActivity
                             //menuItem.setChecked(true);
                         // Crear nuevo fragmento
                         String title = menuItem.getTitle().toString();
-                        selectItem(title);
+                        if (title.equals("Subidos")){
+                            Intent i = new Intent(getApplicationContext(), UploadActivity.class);
+                            //i.putExtra("pendientes",pendientes);
+                            startActivity(i);
+                        }else{
+                            selectItem(title);
+                        }
                         return true;
                     }
                 }
