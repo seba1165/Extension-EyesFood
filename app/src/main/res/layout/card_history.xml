@@ -105,9 +105,8 @@
             android:layout_alignParentBottom="true"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
             android:src="@mipmap/ic_thumb_down_black_18dp"/>
+            style="@style/ActiveIcon"/>
 
         <TextView
             android:id="@+id/tvDisLikesCount"
@@ -125,15 +124,38 @@
             android:layout_height="wrap_content"
             android:id="@+id/comentarios"
             android:layout_toLeftOf="@+id/tvCommentsCount"
+            android:layout_alignParentBottom="true"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:src="@mipmap/ic_mode_comment_black_18dp"/>
+
+        <TextView
+            android:id="@+id/tvCommentsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/denuncia"
+            android:layout_alignParentBottom="true"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/denuncia"
+            android:layout_toLeftOf="@+id/tvDenunciasCount"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:layout_alignParentBottom="true"
-            android:src="@mipmap/ic_mode_comment_black_18dp"/>
+            android:src="@drawable/ic_alert_black"/>
 
         <TextView
-            android:id="@+id/tvCommentsCount"
+            android:id="@+id/tvDenunciasCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

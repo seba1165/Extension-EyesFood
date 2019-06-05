@@ -395,8 +395,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/new_foods_ingredients"
-                            android:inputType="textLongMessage"
-                            style="@style/BodyRegular"/>
+                            style="@style/BodyRegular"
+                            android:inputType="textMultiLine" />
                     </android.support.design.widget.TextInputLayout>
 
                 </LinearLayout>

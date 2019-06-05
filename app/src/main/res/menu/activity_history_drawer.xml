@@ -12,6 +12,10 @@
             android:icon="@mipmap/ic_file_upload_black_18dp"
             android:title="@string/nav_uploads" />
         <item
+            android:id="@+id/bt_nav_modified"
+            android:icon="@drawable/ic_edit_black"
+            android:title="@string/nav_modified" />
+        <item
             android:id="@+id/bt_nav_favorite"
             android:icon="@mipmap/ic_thumb_up_black_18dp"
             android:title="@string/nav_favorites" />

@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
+import com.example.jonsmauricio.eyesfood.data.api.OpenFoodFactsApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.Additive;
 import com.example.jonsmauricio.eyesfood.data.api.model.Comment;
 import com.example.jonsmauricio.eyesfood.data.api.model.Counter;
@@ -39,6 +40,7 @@ import com.example.jonsmauricio.eyesfood.data.api.model.InsertFromLikeBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.NewFoodBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Nutriments;
 import com.example.jonsmauricio.eyesfood.data.api.model.Product;
+import com.example.jonsmauricio.eyesfood.data.api.model.ProductResponse;
 import com.example.jonsmauricio.eyesfood.data.api.model.Recommendation;
 import com.example.jonsmauricio.eyesfood.data.api.model.ShortFood;
 import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
@@ -89,7 +91,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     private String userIdFinal;
 
     //Para los botonos
-    Button additives, recommendations, images, like, dislike;
+    Button additives, recommendations, images, like, dislike, edits;
 
     private List<Recommendation> listaRecomendaciones;
     private ArrayList<FoodImage> listaImagenes;
@@ -98,7 +100,6 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
 
     Retrofit mRestAdapter;
     private EyesFoodApi mEyesFoodApi;
-
     private Food Alimento;
     private Product product;
     private NewFoodBody pendiente;
@@ -112,6 +113,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     //Permissions
     private static final int PERMISSION_CODE = 123;
     String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+    private List<NewFoodBody> listaEdits;
 
     //IP de usach alumnos:
     //private final String baseFotoAlimento = "http://158.170.214.219/api.eyesfood.cl/v1/img/food/";
@@ -177,12 +179,14 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
         images = (Button) findViewById(R.id.btFoodsImages);
         like = (Button) findViewById(R.id.btFoodsLike);
         dislike = (Button) findViewById(R.id.btFoodsDisLike);
+        edits = (Button) findViewById(R.id.btFoodsEdits);
 
         additives.setOnClickListener(this);
         recommendations.setOnClickListener(this);
         images.setOnClickListener(this);
         like.setOnClickListener(this);
         dislike.setOnClickListener(this);
+        edits.setOnClickListener(this);
 
         ivFoodPhoto = (ImageView) findViewById(R.id.image_paralax);
         final CollapsingToolbarLayout collapser = (CollapsingToolbarLayout) findViewById(R.id.collapser);
@@ -211,6 +215,13 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
             if (Alimento==null && product == null){
                 collapser.setTitle(pendiente.getName());
                 CodigoBarras = pendiente.getBarcode();
+                fab.setVisibility(View.GONE);
+                additives.setVisibility(View.GONE);
+                recommendations.setVisibility(View.GONE);
+                images.setVisibility(View.GONE);
+                like.setVisibility(View.GONE);
+                dislike.setVisibility(View.GONE);
+                infoGeneralRating.setVisibility(View.GONE);
             }else{
                 collapser.setTitle(product.getProduct_name()); // Cambiar título
                 //setTitle(Nombre);
@@ -508,7 +519,9 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     //Carga el menú a la toolbar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_foods, menu);
+        if (Alimento!=null && product != null){
+            getMenuInflater().inflate(R.menu.menu_foods, menu);
+        }
         return true;
     }
 
@@ -518,6 +531,10 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
 
             case R.id.fabFoods: {
                 loadComments(CodigoBarras);
+                break;
+            }
+            case R.id.btFoodsEdits: {
+                loadEdits(CodigoBarras);
                 break;
             }
             case R.id.btFoodsAdditives: {
@@ -595,6 +612,40 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
                 isFoodInHistory(userIdFinal, CodigoBarras);
                 break;
             }
+        }
+    }
+
+    private void loadEdits(String codigoBarras) {
+        Call<List<NewFoodBody>> call = mEyesFoodApi.getEdits(codigoBarras);
+        call.enqueue(new Callback<List<NewFoodBody>>() {
+            @Override
+            public void onResponse(Call<List<NewFoodBody>> call, Response<List<NewFoodBody>> response) {
+                if (!response.isSuccessful()) {
+                    Log.d("myTag", "Error loadEdits" + response.message());
+                    return;
+                }
+                listaEdits = response.body();
+                showEdits(listaEdits);
+            }
+
+            @Override
+            public void onFailure(Call<List<NewFoodBody>> call, Throwable t) {
+                Log.d("myTag", "Error loadEdits" + t.getMessage());
+                showEdits(null);
+            }
+        });
+    }
+
+    private void showEdits(List<NewFoodBody> listaEdits) {
+        if (listaEdits!=null && listaEdits.size()>0){
+            Intent i = new Intent(getApplicationContext(), UploadActivity.class);
+            Bundle args = new Bundle();
+            args.putSerializable("Edits",(Serializable) listaEdits);
+            i.putExtra("BUNDLE",args);
+            i.putExtra("modo",3);
+            startActivity(i);
+        }else{
+            hacerToast(getResources().getString(R.string.dialog_no_edits));
         }
     }
 
@@ -689,6 +740,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     private void showSelectedDialog(int seleccion){
         Bundle bundle = new Bundle();
         bundle.putSerializable("Alimento", Alimento);
+        bundle.putSerializable("Product", product);
         // set Fragmentclass Arguments
 
         FragmentManager fragmentManager = getSupportFragmentManager();

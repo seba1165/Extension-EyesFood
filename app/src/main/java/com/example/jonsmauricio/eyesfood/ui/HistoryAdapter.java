@@ -1,9 +1,11 @@
 package com.example.jonsmauricio.eyesfood.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,9 +18,12 @@ import android.widget.TextView;
 
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
+import com.example.jonsmauricio.eyesfood.data.api.OpenFoodFactsApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.Comment;
 import com.example.jonsmauricio.eyesfood.data.api.model.Counter;
 import com.example.jonsmauricio.eyesfood.data.api.model.Food;
+import com.example.jonsmauricio.eyesfood.data.api.model.Product;
+import com.example.jonsmauricio.eyesfood.data.api.model.ProductResponse;
 import com.example.jonsmauricio.eyesfood.data.api.model.ShortFood;
 import com.squareup.picasso.Picasso;
 
@@ -47,7 +52,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private Context context;
     private List<ShortFood> items;
     Retrofit mRestAdapter;
+    Retrofit mRestAdapter2;
     EyesFoodApi mEyesFoodApi;
+    OpenFoodFactsApi mOpenFoodFacts;
     private Counter likesCounter;
     private int likes;
     private Counter dislikesCounter;
@@ -79,6 +86,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         public TextView dislikesCount;
         public ImageView comment;
         public TextView commentsCount;
+        public ImageView alert;
 
         public HistoryViewHolder(View v) {
             super(v);
@@ -93,6 +101,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             comment = v.findViewById(R.id.comentarios);
             commentsCount = v.findViewById(R.id.tvCommentsCount);
             progressBar = v.findViewById(R.id.pbCardProgress);
+            alert = v.findViewById(R.id.denuncia);
             itemView.setOnClickListener(this);
         }
 
@@ -141,6 +150,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         }
 
         viewHolder.like.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 //0 para ninguno 1 para like 2 para dislike
@@ -207,7 +217,82 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 loadFood(items.get(i).getBarCode(), items.get(i).getLike());
             }
         });
+        viewHolder.alert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (items.get(i).getDenuncia()==1){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("Denuncia")
+                            .setMessage("La imagen del producto ya ha sido denunciada por otro usuario. Gracias")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                }
+                            });
+                    builder.show();
+                }else{
+                    denunciar(items.get(i));
+                }
+
+            }
+        });
     }
+
+    private void denunciar(final ShortFood shortFood) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Denuncia")
+                    .setMessage("Desea denunciar la imagen de este producto ?")
+                    .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            realizarDenuncia(shortFood.getBarCode());
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+            builder.show();
+    }
+
+    private void realizarDenuncia(String barCode) {
+        Call<ShortFood> call = mEyesFoodApi.modifyReport(barCode);
+        call.enqueue(new Callback<ShortFood>() {
+            @Override
+            public void onResponse(Call<ShortFood> call, Response<ShortFood> response) {
+                if (!response.isSuccessful()) {
+                    Log.d("myTag", "no Éxito en realizarDenuncia " + response.message());
+                    return;
+                }else {
+                    Log.d("myTag", "Éxito en realizarDenuncia");
+                    showSuccesDialog();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ShortFood> call, Throwable t) {
+                Log.d("myTag", "onFailure realizarDenuncia " + t.toString());
+            }
+        });
+    }
+
+    private void showSuccesDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Denuncia")
+                .setMessage("El producto ha sido denunciado con exito")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+        builder.show();
+    }
+
 
     //Actualiza los me gusta del alimento
     public void updateLikeHistory(final HistoryViewHolder viewHolder, String userId, final String barcode, int like){
@@ -378,9 +463,30 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                     return;
                 }
                 //Si entro acá el alimento existe en la BD y lo obtengo
-                Food resultado = response.body();
+                mRestAdapter2 = new Retrofit.Builder()
+                        .baseUrl(OpenFoodFactsApi.BASE_URL)
+                        .client(new OkHttpClient.Builder().build())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                // Crear conexión a la API de EyesFood
+                mOpenFoodFacts = mRestAdapter2.create(OpenFoodFactsApi.class);
+                final Food resultado = response.body();
                 //Muestro el alimento
-                loadComments(resultado, barcode, like);
+                Call<ProductResponse> call2 = mOpenFoodFacts.obtenerProducto(barcode);
+                call2.enqueue(new Callback<ProductResponse>() {
+                    @Override
+                    public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
+                        Product product = response.body().getProduct();
+                        loadComments(resultado, barcode, like, product);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProductResponse> call, Throwable t) {
+
+                    }
+                });
+
             }
 
             @Override
@@ -390,7 +496,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     //Carga los comentarios del alimento
-    public void loadComments(final Food alimento, String barcode, final int like) {
+    public void loadComments(final Food alimento, String barcode, final int like, final Product product) {
         Call<List<Comment>> call = mEyesFoodApi.getComments(barcode);
         call.enqueue(new Callback<List<Comment>>() {
             @Override
@@ -400,7 +506,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                     return;
                 }
                 listaComentarios = response.body();
-                showComments(alimento, listaComentarios, like);
+                showComments(alimento, listaComentarios, like, product);
             }
 
             @Override
@@ -409,7 +515,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         });
     }
 
-    public void showComments(Food alimento, List<Comment> lista, int like){
+    public void showComments(Food alimento, List<Comment> lista, int like, Product product){
         Intent intent = new Intent(context, CommentsActivity.class);
         Bundle args = new Bundle();
         args.putSerializable("Comentarios",(Serializable) lista);
@@ -417,6 +523,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         intent.putExtra("Alimento",alimento);
         intent.putExtra("MeGusta",like);
+        intent.putExtra("Product", product);
         context.startActivity(intent);
     }
 

@@ -28,6 +28,13 @@
         android:layout_below="@+id/tvPendientesHeader">
     </ListView>
 
+    <ListView
+        android:id="@+id/lvResultEdits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPendientesHeader">
+    </ListView>
+
     <TextView
         android:id="@+id/tvAceptadosHeader"
         style="@style/Base.TextAppearance.AppCompat.Widget.PopupMenu.Header"
@@ -45,6 +52,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvAceptadosHeader"></ListView>
+
+    <TextView
+        android:id="@+id/tvRechazadosHeader"
+        style="@style/Base.TextAppearance.AppCompat.Widget.PopupMenu.Header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lvResultAceptados"
+        android:paddingLeft="16dp"
+        android:paddingTop="8dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp"
+        android:text="@string/rechazados_header" />
+
+    <ListView
+        android:id="@+id/lvResultRechazados"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvRechazadosHeader"></ListView>
 
     <TextView
         android:id="@+id/tvSearchProgressText"

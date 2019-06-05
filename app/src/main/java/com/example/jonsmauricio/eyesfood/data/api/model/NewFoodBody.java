@@ -12,7 +12,7 @@ public class NewFoodBody implements Serializable {
     private String userId;
     @SerializedName("codigoBarras")
     private String barcode;
-    @SerializedName("nombre")
+    @SerializedName("nombreAlimento")
     private String name;
     @SerializedName("producto")
     private String product;
@@ -274,6 +274,6 @@ public class NewFoodBody implements Serializable {
 
     @Override
     public String toString() {
-        return this.name + " - " + this.barcode;
+        return this.name + " - " + this.date + " - "+this.barcode;
     }
 }

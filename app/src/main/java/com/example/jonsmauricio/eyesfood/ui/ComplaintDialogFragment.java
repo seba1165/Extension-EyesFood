@@ -50,15 +50,15 @@ public class ComplaintDialogFragment extends DialogFragment {
 
     TextView tvCodigoBarras;
 
-    EditText etNombre, etProducto, etMarca, etNeto, etPorcion, etPorcionUnit, etEnergia, etProteinas, etGrasaTotal,
+    EditText etNombre, etProducto, etMarca, etNeto, etPorcion, etEnergia, etProteinas, etGrasaTotal,
             etGrasaSat, etGrasaMono, etGrasaPoli, etGrasaTrans, etColesterol, etHidratos, etAzucares, etFibra, etSodio,
             etIngredientes;
 
-    TextInputLayout tilNombre, tilProducto, tilMarca, tilNeto, tilPorcion, tilPorcionUnit, tilEnergia, tilProteinas,
+    TextInputLayout tilNombre, tilProducto, tilMarca, tilNeto, tilPorcion, tilEnergia, tilProteinas,
             tilGrasaTotal, tilGrasaSat, tilGrasaMono, tilGrasaPoli, tilGrasaTrans, tilColesterol, tilHidratos, tilAzucares,
             tilFibra, tilSodio;
 
-    String Nombre, Producto, Marca, Porcion, PorcionUnit, Ingredientes, Neto, Energia, Proteinas, GrasaTotal, GrasaSat,
+    String Nombre, Producto, Marca, Porcion, Ingredientes, Neto, Energia, Proteinas, GrasaTotal, GrasaSat,
             GrasaMono, GrasaPoli, GrasaTrans, Colesterol, Hidratos, Azucares, Fibra, Sodio;
 
     String Date = "";
@@ -121,62 +121,92 @@ public class ComplaintDialogFragment extends DialogFragment {
         etNombre = getView().findViewById(R.id.etNewFoodsInfoGeneralTitulo);
         tilNombre = getView().findViewById(R.id.tvNewFoodsInfoGeneralNombre);
         tilNombre.setHint(tilNombre.getHint() + " " + setFactsString(product.getProduct_name()));
+        tilNombre.getEditText().setText(product.getProduct_name());
         etProducto = getView().findViewById(R.id.etNewFoodsInfoGeneralProducto);
         tilProducto = getView().findViewById(R.id.tvNewFoodsInfoGeneralProducto);
-        //TODO: Cambiar datos
+        tilProducto.setHint(tilProducto.getHint() + " " + setFactsString(product.getCategories()));
+        tilProducto.getEditText().setText(product.getCategories());
+
         //tilProducto.setHint(tilProducto.getHint() + " " + setFactsString(Alimento.getProductId()));
         etMarca = getView().findViewById(R.id.etNewFoodsInfoGeneralMarca);
         tilMarca = getView().findViewById(R.id.tvNewFoodsInfoGeneralMarca);
+        tilMarca.setHint(tilMarca.getHint() + " " + setFactsString(product.getBrands()));
+        tilMarca.getEditText().setText(product.getBrands());
         //tilMarca.setHint(tilMarca.getHint() + " " + setFactsString(Alimento.getBrandCode()));
         etNeto = getView().findViewById(R.id.etNewFoodsInfoGeneralNeto);
         tilNeto = getView().findViewById(R.id.tvNewFoodsInfoGeneralNeto);
+        tilNeto.setHint(tilNeto.getHint() + " " + setFactsString(product.getQuantity()));
+        tilNeto.getEditText().setText(product.getQuantity());
         //tilNeto.setHint(tilNeto.getHint() + " " + setFactsInt(Alimento.getContent()) + setFactsString(Alimento.getUnit()));
 
         etPorcion = getView().findViewById(R.id.etNewFoodsInfoNutricionalPorcion);
         tilPorcion = getView().findViewById(R.id.tvNewFoodsInfoNutricionalPorcion);
+        tilPorcion.setHint(tilPorcion.getHint() + " " + setFactsString(product.getServing_size()));
+        tilPorcion.getEditText().setText(product.getServing_size());
         //tilPorcion.setHint(tilPorcion.getHint() + " " + setFactsString(Alimento.getPortion()));
-        etPorcionUnit = getView().findViewById(R.id.etNewFoodsInfoNutricionalPorcionUnit);
-        tilPorcionUnit = getView().findViewById(R.id.tvNewFoodsInfoNutricionalPorcionUnit);
-        //tilPorcionUnit.setHint(tilPorcionUnit.getHint() + " " + setFactsFloat(Alimento.getPortionGr()) + setFactsString(Alimento.getUnit()));
         etEnergia = getView().findViewById(R.id.etNewFoodsInfoNutricionalEnergia);
         tilEnergia = getView().findViewById(R.id.tvNewFoodsInfoNutricionalEnergia);
+        tilEnergia.setHint(tilEnergia.getHint() + " " + setFactsString(product.getNutriments().getEnergy_100g()));
+        tilEnergia.getEditText().setText(product.getNutriments().getEnergy_100g());
         //tilEnergia.setHint(tilEnergia.getHint() + " " + setFactsFloat(Alimento.getEnergy()));
         etProteinas = getView().findViewById(R.id.etNewFoodsInfoNutricionalProteinas);
         tilProteinas = getView().findViewById(R.id.tvNewFoodsInfoNutricionalProteinas);
+        tilProteinas.setHint(tilProteinas.getHint() + " " + setFactsString(Float.toString(product.getNutriments().getProteins_100g())));
+        tilProteinas.getEditText().setText(Float.toString(product.getNutriments().getProteins_100g()));
         //tilProteinas.setHint(tilProteinas.getHint() + " " + setFactsFloat(Alimento.getProtein()));
         etGrasaTotal = getView().findViewById(R.id.etNewFoodsInfoNutricionalGrasaTotal);
         tilGrasaTotal = getView().findViewById(R.id.tvNewFoodsInfoNutricionalGrasaTotal);
+        tilGrasaTotal.setHint(tilGrasaTotal.getHint() + " " + setFactsString(Float.toString(product.getNutriments().getFat_100g())));
+        tilGrasaTotal.getEditText().setText(Float.toString(product.getNutriments().getFat_100g()));
         //tilGrasaTotal.setHint(tilGrasaTotal.getHint() + " " + setFactsFloat(Alimento.getTotalFat()));
         etGrasaSat = getView().findViewById(R.id.etNewFoodsInfoNutricionalGrasaSat);
         tilGrasaSat = getView().findViewById(R.id.tvNewFoodsInfoNutricionalGrasaSat);
+        tilGrasaSat.setHint(tilGrasaSat.getHint() + " " + setFactsString(Float.toString(product.getNutriments().getSaturatedFat100g())));
+        tilGrasaSat.getEditText().setText(Float.toString(product.getNutriments().getSaturatedFat100g()));
         //tilGrasaSat.setHint(tilGrasaSat.getHint() + " " + setFactsFloat(Alimento.getSaturatedFat()));
         etGrasaMono = getView().findViewById(R.id.etNewFoodsInfoNutricionalGrasaMono);
         tilGrasaMono= getView().findViewById(R.id.tvNewFoodsInfoNutricionalGrasaMono);
+        tilGrasaMono.setHint(tilGrasaMono.getHint() + " " + setFactsString(Float.toString(product.getNutriments().getMonounsaturated_fat_100g())));
+        tilGrasaMono.getEditText().setText(Float.toString(product.getNutriments().getMonounsaturated_fat_100g()));
         //tilGrasaMono.setHint(tilGrasaMono.getHint() + " " + setFactsFloat(Alimento.getMonoFat()));
         etGrasaPoli = getView().findViewById(R.id.etNewFoodsInfoNutricionalGrasaPoli);
         tilGrasaPoli = getView().findViewById(R.id.tvNewFoodsInfoNutricionalGrasaPoli);
+        tilGrasaPoli.setHint(tilGrasaPoli.getHint() + " " + setFactsString(Float.toString(product.getNutriments().getPolyunsaturated_fat_100g())));
+        tilGrasaPoli.getEditText().setText(Float.toString(product.getNutriments().getPolyunsaturated_fat_100g()));
         //tilGrasaPoli.setHint(tilGrasaPoli.getHint() + " " + setFactsFloat(Alimento.getPoliFat()));
         etGrasaTrans = getView().findViewById(R.id.etNewFoodsInfoNutricionalGrasaTrans);
         tilGrasaTrans = getView().findViewById(R.id.tvNewFoodsInfoNutricionalGrasaTrans);
+        tilGrasaTrans.setHint(tilGrasaTrans.getHint() + " " + setFactsString(Float.toString(product.getNutriments().getTrans_fat_100g())));
+        tilGrasaTrans.getEditText().setText(Float.toString(product.getNutriments().getTrans_fat_100g()));
         //tilGrasaTrans.setHint(tilGrasaTrans.getHint() + " " + setFactsFloat(Alimento.getTransFat()));
         etColesterol = getView().findViewById(R.id.etNewFoodsInfoNutricionalColesterol);
         tilColesterol = getView().findViewById(R.id.tvNewFoodsInfoNutricionalColesterol);
+        tilColesterol.setHint(tilColesterol.getHint() + " " + setFactsString(Float.toString(product.getNutriments().getCholesterol_100g())));
+        tilColesterol.getEditText().setText(Float.toString(product.getNutriments().getCholesterol_100g()));
         //tilColesterol.setHint(tilColesterol.getHint() + " " + setFactsFloat(Alimento.getCholesterol()));
         etHidratos = getView().findViewById(R.id.etNewFoodsInfoNutricionalHidratos);
         tilHidratos = getView().findViewById(R.id.tvNewFoodsInfoNutricionalHidratos);
+        tilHidratos.setHint(tilHidratos.getHint() + " " + setFactsString(Float.toString(product.getNutriments().getCarbohydrates_100g())));
+        tilHidratos.getEditText().setText(Float.toString(product.getNutriments().getCarbohydrates_100g()));
         //tilHidratos.setHint(tilHidratos.getHint() + " " + setFactsFloat(Alimento.getCarbo()));
         etAzucares = getView().findViewById(R.id.etNewFoodsInfoNutricionalAzucares);
         tilAzucares = getView().findViewById(R.id.tvNewFoodsInfoNutricionalAzucares);
+        tilAzucares.setHint(tilAzucares.getHint() + " " + setFactsString(Float.toString(product.getNutriments().getSugars_100g())));
+        tilAzucares.getEditText().setText(Float.toString(product.getNutriments().getSugars_100g()));
         //tilAzucares.setHint(tilAzucares.getHint() + " " + setFactsFloat(Alimento.getTotalSugar()));
         etFibra = getView().findViewById(R.id.etNewFoodsInfoNutricionalFibra);
         tilFibra = getView().findViewById(R.id.tvNewFoodsInfoNutricionalFibra);
+        tilFibra.setHint(tilFibra.getHint() + " " + setFactsString(Float.toString(product.getNutriments().getFiber_100g())));
+        tilFibra.getEditText().setText(Float.toString(product.getNutriments().getFiber_100g()));
         //tilFibra.setHint(tilFibra.getHint() + " " + setFactsFloat(Alimento.getFiber()));
         etSodio = getView().findViewById(R.id.etNewFoodsInfoNutricionalSodio);
         tilSodio = getView().findViewById(R.id.tvNewFoodsInfoNutricionalSodio);
+        tilSodio.setHint(tilGrasaTotal.getHint() + " " + setFactsString(Float.toString(product.getNutriments().getSodium_100g())));
+        tilSodio.getEditText().setText(Float.toString(product.getNutriments().getSodium_100g()));
         //tilSodio.setHint(tilSodio.getHint() + " " + setFactsFloat(Alimento.getSodium()));
 
         etIngredientes = getView().findViewById(R.id.etNewFoodsIngredients);
-
+        etIngredientes.setText(product.getIngredients_text());
         userIdFinal = SessionPrefs.get(getContext()).getUserId();
     }
 
@@ -242,7 +272,6 @@ public class ComplaintDialogFragment extends DialogFragment {
             Neto = etNeto.getText().toString();
 
             Porcion = etPorcion.getText().toString();
-            PorcionUnit = etPorcionUnit.getText().toString();
             Energia = etEnergia.getText().toString();
             Proteinas = etProteinas.getText().toString();
             GrasaTotal = etGrasaTotal.getText().toString();
@@ -260,7 +289,7 @@ public class ComplaintDialogFragment extends DialogFragment {
 
             //Esta comprobación es la adecuada
             if(Nombre.equals("") && Producto.equals("") && Marca.equals("") && Neto.equals("") && Porcion.equals("") &&
-                    PorcionUnit.equals("") && Energia.equals("") && Proteinas.equals("") && GrasaTotal.equals("") &&
+                    Energia.equals("") && Proteinas.equals("") && GrasaTotal.equals("") &&
                     GrasaSat.equals("") && GrasaMono.equals("") && GrasaPoli.equals("") && GrasaTrans.equals("") &&
                     Colesterol.equals("") && Hidratos.equals("") && Azucares.equals("") && Fibra.equals("") && Sodio.equals("")
                     && Ingredientes.equals("")){
@@ -280,8 +309,8 @@ public class ComplaintDialogFragment extends DialogFragment {
 
     public void sendComplaint(){
         Call<Food> call = mEyesFoodApi.newFoodComplaint(new NewFoodBody(userIdFinal, barCode, Nombre, Producto, Marca,
-                Neto, Porcion, PorcionUnit, Energia, Proteinas, GrasaTotal, GrasaSat, GrasaMono, GrasaPoli, GrasaTrans,
-                Colesterol, Hidratos, Azucares, Fibra, Sodio, Ingredientes, Date, "4"));
+                Neto, Porcion, "", Energia, Proteinas, GrasaTotal, GrasaSat, GrasaMono, GrasaPoli, GrasaTrans,
+                Colesterol, Hidratos, Azucares, Fibra, Sodio, Ingredientes, Date, "2"));
         call.enqueue(new Callback<Food>() {
             @Override
             public void onResponse(Call<Food> call, Response<Food> response) {

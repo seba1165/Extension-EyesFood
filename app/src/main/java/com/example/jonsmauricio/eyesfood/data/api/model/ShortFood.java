@@ -22,12 +22,16 @@ public class ShortFood{
     private float foodHazard;
     @SerializedName("fechaEscaneo")
     private String date;
+    @SerializedName("date")
+    private String fecha;
     @SerializedName("fotoOficial")
     private String officialPhoto;
     @SerializedName("meGusta")
     private int like;
     @SerializedName("escaneo")
     private int list;
+    @SerializedName("denuncia")
+    private int denuncia;
 
     public ShortFood(String userId, String barCode, String name, float foodHazard, String date, String officialPhoto, int like, int list) {
         this.userId = userId;
@@ -85,8 +89,20 @@ public class ShortFood{
         this.officialPhoto = officialPhoto;
     }
 
+    public int getDenuncia() {
+        return denuncia;
+    }
+
+    public void setDenuncia(int denuncia) {
+        this.denuncia = denuncia;
+    }
+
     @Override
     public String toString(){
-        return name + " - " + " - " + date;
+        if (fecha == null){
+            return this.name + " - " + this.date + " - " +this.barCode;
+        }else{
+            return this.name + " - " + this.fecha + " - " +this.barCode;
+        }
     }
 }

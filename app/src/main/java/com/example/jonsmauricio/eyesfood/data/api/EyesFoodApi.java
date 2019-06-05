@@ -29,7 +29,7 @@ public interface EyesFoodApi {
     // Esta es la ip de usach alumnos
     // public static final String BASE_URL = "http://158.170.214.219/api.eyesfood.cl/v1/";
     //URL API LOCAL
-    String BASE_URL = "http://190.22.171.15/api.eyesfood.cl/v1/";
+    String BASE_URL = "http://201.189.45.8/api.eyesfood.cl/v1/";
     String ADDITIVE_URL = "https://cl.openfoodfacts.org/aditivo/";
     //URL API WEB
     //String BASE_URL = "https://eyesfood.000webhostapp.com/api.eyesfood.cl/v1/";
@@ -57,9 +57,17 @@ public interface EyesFoodApi {
     @GET("foods/{barcode}/recommendations")
     Call<List<Recommendation>> getRecommendations(@Path("barcode") String barcode);
 
+    //Petición que retorna las ediciones aceptadas de un alimento mediante su código de barras
+    @GET("foods/{barcode}/edits")
+    Call<List<NewFoodBody>> getEdits(@Path("barcode") String barcode);
+
     //Petición que retorna los alimentos pendientes de subida de un usuario
     @GET("foods/{userId}/new")
     Call<List<NewFoodBody>> getNewFoods(@Path("userId") String userId);
+
+    //Petición que retorna los alimentos pendientes de subida de un usuario
+    @GET("foods/{userId}/rejected")
+    Call<List<NewFoodBody>> getNewFoodsRejected(@Path("userId") String userId);
 
     //Petición que retorna los alimentos creados por el usuario y aceptados
     @GET("foods/{userId}/create")
@@ -101,6 +109,12 @@ public interface EyesFoodApi {
     @POST("history/{userId}/{barcode}/scan")
     Call<ShortFood> modifyHistoryScan(@Path("userId") String userId, @Path("barcode") String barcode);
 
+    //Petición que denuncia un alimento
+    //No se usa Patch porque no resulta
+    @Headers("Content-Type: application/json")
+    @POST("foods/{barcode}/report/")
+    Call<ShortFood> modifyReport(@Path("barcode") String barcode);
+
     //Petición que retorna los aditivos de un alimento con todos sus datos
     @GET("foods/{barcode}/additives/full")
     Call<List<Additive>> getFullAdditives(@Path("barcode") String barcode);
@@ -128,6 +142,18 @@ public interface EyesFoodApi {
     //Inserta una solicitud de edición de alimento
     @POST("foods/complaint")
     Call<Food> newFoodComplaint(@Body NewFoodBody newFoodBody);
+
+    //Retorna los alimentos editados por un usuario especifico
+    @GET("foods/{userId}/complaint")
+    Call<List<ShortFood>> getFoodsComplaint(@Path("userId") String userId);
+
+    //Retorna los alimentos editados aceptados por un usuario especifico
+    @GET("foods/{userId}/complaintp")
+    Call<List<NewFoodBody>> getFoodsComplaintP(@Path("userId") String userId);
+
+    //Retorna las solicitudes de edicion rechazadas realizadas por un usuario especifico
+    @GET("foods/{userId}/complaintr")
+    Call<List<NewFoodBody>> getFoodsComplaintR(@Path("userId") String userId);
 
     //Retorna las imágenes autorizadas de un alimento
     @GET("images/{barcode}")

@@ -201,7 +201,6 @@ public class HistoryActivity extends AppCompatActivity
         //Hacer el if según el título
         if(title.equals(getResources().getString(R.string.nav_history))){
             //Llama a la función que carga el historial de escaneo
-            Log.d("myTag","1");
             loadScan(userId);
         }
         else if(title.equals(getResources().getString(R.string.nav_uploads))){
@@ -832,7 +831,11 @@ public class HistoryActivity extends AppCompatActivity
                         String title = menuItem.getTitle().toString();
                         if (title.equals("Subidos")){
                             Intent i = new Intent(getApplicationContext(), UploadActivity.class);
-                            //i.putExtra("pendientes",pendientes);
+                            i.putExtra("modo",1);
+                            startActivity(i);
+                        }else if(title.equals("Editados")){
+                            Intent i = new Intent(getApplicationContext(), UploadActivity.class);
+                            i.putExtra("modo",2);
                             startActivity(i);
                         }else{
                             selectItem(title);

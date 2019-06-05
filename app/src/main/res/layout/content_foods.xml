@@ -351,6 +351,13 @@ android:paddingTop="24dp">
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btFoodsEdits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/foods_button_edits"
+        style="@style/RaisedButton"/>
+
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/btFoodsAdditives"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -379,19 +386,19 @@ android:paddingTop="24dp">
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btFoodsLike"
+            style="@style/LikeButton"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:drawableLeft="@mipmap/ic_thumb_up_white_24dp"
-            style="@style/LikeButton"/>
+            android:layout_weight="1"
+            android:drawableLeft="@mipmap/ic_thumb_up_white_24dp" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btFoodsDisLike"
+            style="@style/LikeButton"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:drawableLeft="@mipmap/ic_thumb_down_white_24dp"
-            style="@style/LikeButton"/>
+            android:layout_weight="1"
+            android:drawableLeft="@mipmap/ic_thumb_down_white_24dp" />
 
     </LinearLayout>
 

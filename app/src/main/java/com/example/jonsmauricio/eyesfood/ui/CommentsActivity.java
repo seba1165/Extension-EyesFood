@@ -58,6 +58,7 @@ public class CommentsActivity extends AppCompatActivity {
     private ImageView userAvatar;
     private TextView emptyState;
     private Food Alimento;
+    private Food Product;
     private ArrayAdapter<Comment> adaptadorComments;
 
     Retrofit mRestAdapter;
@@ -115,7 +116,7 @@ public class CommentsActivity extends AppCompatActivity {
             Alimento = (Food) b.get("Alimento");
             product = (Product) b.get("Product");
             MeGusta = (int) b.get("MeGusta");
-            setTitle(product.getProduct_name());
+            setTitle(Alimento.getFoodName());
             CodigoBarras = Alimento.getBarCode();
         }
 
