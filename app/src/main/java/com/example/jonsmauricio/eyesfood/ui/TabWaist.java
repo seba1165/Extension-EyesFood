@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
+import com.example.jonsmauricio.eyesfood.data.api.UserDataApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.EditMeasureBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Measure;
 import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
@@ -35,7 +36,7 @@ public class TabWaist extends Fragment{
 
     private String userIdFinal;
     Retrofit mRestAdapter;
-    EyesFoodApi mEyesFoodApi;
+    UserDataApi mUserDataApi;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,12 +47,12 @@ public class TabWaist extends Fragment{
 
         // Crear conexión al servicio REST
         mRestAdapter = new Retrofit.Builder()
-                .baseUrl(EyesFoodApi.BASE_URL)
+                .baseUrl(UserDataApi.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         // Crear conexión a la API de EyesFood
-        mEyesFoodApi = mRestAdapter.create(EyesFoodApi.class);
+        mUserDataApi = mRestAdapter.create(UserDataApi.class);
 
         loadWaist(userIdFinal);
 
@@ -115,7 +116,7 @@ public class TabWaist extends Fragment{
     }
 
     private void deleteMeasure(int id) {
-        Call<Measure> call = mEyesFoodApi.deleteWaist(id);
+        Call<Measure> call = mUserDataApi.deleteWaist(id);
         call.enqueue(new Callback<Measure>() {
             @Override
             public void onResponse(Call<Measure> call,
@@ -138,7 +139,7 @@ public class TabWaist extends Fragment{
 
     private void editMeasure(String medida, int id) {
         EditMeasureBody body = new EditMeasureBody(id, userIdFinal, medida);
-        Call<Measure> call = mEyesFoodApi.editWaist(body);
+        Call<Measure> call = mUserDataApi.editWaist(body);
         call.enqueue(new Callback<Measure>() {
             @Override
             public void onResponse(Call<Measure> call,
@@ -160,7 +161,7 @@ public class TabWaist extends Fragment{
     }
 
     public void loadWaist(String userId){
-        Call<List<Measure>> call = mEyesFoodApi.getWaist(userId);
+        Call<List<Measure>> call = mUserDataApi.getWaist(userId);
         call.enqueue(new Callback<List<Measure>>() {
             @Override
             public void onResponse(Call<List<Measure>> call,

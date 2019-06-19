@@ -11,26 +11,16 @@ import java.io.Serializable;
 public class Comment implements Serializable {
     @SerializedName("idComentario")
     private String id;
-    @SerializedName("Nombre")
-    private String userName;
-    @SerializedName("Apellido")
-    private String userLastName;
-    @SerializedName("FotoUsuario")
-    private String userPhoto;
-    @SerializedName("Reputacion")
-    private float reputation;
+    @SerializedName("idUsuario")
+    private String idUsuario;
     @SerializedName("comentario")
     private String comment;
     @SerializedName("fecha")
     private String date;
 
-    public Comment(String id, String userName, String userLastName, String userPhoto, float reputation, String comment,
-                   String date) {
+    public Comment(String id, String idUsuario, String comment, String date) {
         this.id = id;
-        this.userName = userName;
-        this.userLastName = userLastName;
-        this.userPhoto = userPhoto;
-        this.reputation = reputation;
+        this.idUsuario = idUsuario;
         this.comment = comment;
         this.date = date;
     }
@@ -39,20 +29,8 @@ public class Comment implements Serializable {
         return id;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getUserLastName() {
-        return userLastName;
-    }
-
-    public String getUserPhoto() {
-        return userPhoto;
-    }
-
-    public float getReputation() {
-        return reputation;
+    public String getIdUsuario() {
+        return idUsuario;
     }
 
     public String getComment() {

@@ -26,6 +26,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,7 +89,6 @@ public class UploadActivity extends AppCompatActivity {
 
 
         userIdFinal = SessionPrefs.get(this).getUserId();
-
         // Crear conexión al servicio REST
         mRestAdapter = new Retrofit.Builder()
                 .baseUrl(EyesFoodApi.BASE_URL)
@@ -189,9 +189,10 @@ public class UploadActivity extends AppCompatActivity {
             public void onResponse(Call<ProductResponse> call, Response<ProductResponse> response) {
                 if (!response.isSuccessful()) {
                     // TODO: Procesar error de API
-                    Log.d("myTag", "Error api OpenFood");
+                    Log.d("myTag", "Error api OpenFood: "+response.message() + response.code());
                     return;
                 }
+                Log.d("myTag", "Pasa");
                 final Product product = response.body().getProduct();
                 if (response.body().getProduct()!=null){product.setCodigo(response.body().getCode());}
                 Call<Food> call2 = mEyesFoodApi.getFood(product.getCodigo());

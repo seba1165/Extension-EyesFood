@@ -8,7 +8,7 @@ import retrofit2.http.Path;
 
 public interface OpenFoodFactsApi {
 
-    String BASE_URL = "https://world.openfoodfacts.org/api/v0/product/";
+    String BASE_URL = "https://cl.openfoodfacts.org/api/v0/product/";
 
     //Obtener producto desde OpenFood con su codigo de barra
     @GET("{barcode}")

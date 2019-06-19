@@ -59,6 +59,7 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -296,6 +297,7 @@ public class HistoryActivity extends AppCompatActivity
         for (ShortFood food : historial2) {
             productResponseCalls.add(mOpenFoodApi.obtenerProducto(food.getBarCode()));
         }
+        Log.d("myTag", "En show History ");
         for (Call<ProductResponse> call2 : productResponseCalls){
             call2.enqueue(new Callback<ProductResponse>() {
                 @Override
@@ -564,6 +566,7 @@ public class HistoryActivity extends AppCompatActivity
                 })
                 .setNegativeButton(getResources().getString(R.string.negative_dialog), null)
                 .show();
+        progressDialog.dismiss();
     }
 
     private void showNewFoodsDialog(){

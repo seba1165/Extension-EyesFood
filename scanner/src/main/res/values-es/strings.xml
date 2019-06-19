@@ -133,7 +133,7 @@
   <string name="result_email_address">Dirección de correo electrónico encontrado</string>
   <string name="result_geo">Coordenadas geográficas encontradas</string>
   <string name="result_isbn">Libro encontrado</string>
-  <string name="result_product">Producto encontrado</string>
+  <string name="result_product">Alimento escaneado</string>
   <string name="result_sms">Dirección de SMS encontrada</string>
   <string name="result_tel">Número de teléfono encontrado</string>
   <string name="result_text">Texto encontrado</string>

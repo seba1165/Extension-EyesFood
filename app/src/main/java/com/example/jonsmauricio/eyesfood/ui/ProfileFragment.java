@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
+import com.example.jonsmauricio.eyesfood.data.api.UserDataApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.Measure;
 import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
 import com.jjoe64.graphview.GraphView;
@@ -44,7 +45,7 @@ public class ProfileFragment extends Fragment {
 
     private String userIdFinal;
     Retrofit mRestAdapter;
-    EyesFoodApi mEyesFoodApi;
+    UserDataApi mUserDataApi;
 
     private List<Measure> listaPeso;
     private List<Measure> listaGrasa;
@@ -101,12 +102,12 @@ public class ProfileFragment extends Fragment {
 
         // Crear conexión al servicio REST
         mRestAdapter = new Retrofit.Builder()
-                .baseUrl(EyesFoodApi.BASE_URL)
+                .baseUrl(UserDataApi.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         // Crear conexión a la API de EyesFood
-        mEyesFoodApi = mRestAdapter.create(EyesFoodApi.class);
+        mUserDataApi = mRestAdapter.create(UserDataApi.class);
 
         return view;
     }
@@ -203,7 +204,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void loadWeight(final String userId){
-        Call<List<Measure>> call = mEyesFoodApi.getWeight(userId);
+        Call<List<Measure>> call = mUserDataApi.getWeight(userId);
         call.enqueue(new Callback<List<Measure>>() {
             @Override
             public void onResponse(Call<List<Measure>> call,
@@ -224,7 +225,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void loadFat(final String userId){
-        Call<List<Measure>> call = mEyesFoodApi.getFat(userId);
+        Call<List<Measure>> call = mUserDataApi.getFat(userId);
         call.enqueue(new Callback<List<Measure>>() {
             @Override
             public void onResponse(Call<List<Measure>> call,
@@ -245,7 +246,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void loadWaist(final String userId){
-        Call<List<Measure>> call = mEyesFoodApi.getWaist(userId);
+        Call<List<Measure>> call = mUserDataApi.getWaist(userId);
         call.enqueue(new Callback<List<Measure>>() {
             @Override
             public void onResponse(Call<List<Measure>> call,
@@ -266,7 +267,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void loadA1c(final String userId){
-        Call<List<Measure>> call = mEyesFoodApi.getA1c(userId);
+        Call<List<Measure>> call = mUserDataApi.getA1c(userId);
         call.enqueue(new Callback<List<Measure>>() {
             @Override
             public void onResponse(Call<List<Measure>> call,
@@ -287,7 +288,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void loadGluPre(final String userId){
-        Call<List<Measure>> call = mEyesFoodApi.getPreglucose(userId);
+        Call<List<Measure>> call = mUserDataApi.getPreglucose(userId);
         call.enqueue(new Callback<List<Measure>>() {
             @Override
             public void onResponse(Call<List<Measure>> call,
@@ -308,7 +309,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void loadGluPost(final String userId){
-        Call<List<Measure>> call = mEyesFoodApi.getPostglucose(userId);
+        Call<List<Measure>> call = mUserDataApi.getPostglucose(userId);
         call.enqueue(new Callback<List<Measure>>() {
             @Override
             public void onResponse(Call<List<Measure>> call,
@@ -329,7 +330,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void loadPressure(final String userId){
-        Call<List<Measure>> call = mEyesFoodApi.getPressure(userId);
+        Call<List<Measure>> call = mUserDataApi.getPressure(userId);
         call.enqueue(new Callback<List<Measure>>() {
             @Override
             public void onResponse(Call<List<Measure>> call,

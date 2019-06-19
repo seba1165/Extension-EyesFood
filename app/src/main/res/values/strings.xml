@@ -144,6 +144,7 @@
     <string name="body_notification_upload_images">Tu imagen se ha subido correctamente</string>
 
     <string name="message_failed_solitude_upload">Parece que no has seleccionado ninguna foto, por favor selecciona una</string>
+    <string name="message_failed_solitude_upload_rb">Parece que no has seleccionado ningun tipo de foto, por favor selecciona uno</string>
 
     <string name="title_foods_permission_rationale_storage">Almacenamiento</string>
     <string name="message_foods_permission_rationale_storage">Es necesario dar permiso de almacenamiento para agregar fotos. Si seleccionaste no volver a preguntar, debes dar manualmente el permiso en Ajustes -> Aplicaciones -> Administrador de aplicaciones -> EyesFood -> Accesos</string>
@@ -226,5 +227,8 @@
     <string name="title_activity_upload">Subidos</string>
     <string name="nav_modified">Editados</string>
     <string name="rechazados_header">Rechazados</string>
+    <string name="image_front">Frontal</string>
+    <string name="image_ingredients">Ingredientes</string>
+    <string name="image_nutrients" >Nutrientes</string>
 
 </resources>

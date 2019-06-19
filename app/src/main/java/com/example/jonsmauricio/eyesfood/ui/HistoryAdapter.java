@@ -17,6 +17,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.jonsmauricio.eyesfood.R;
+import com.example.jonsmauricio.eyesfood.data.api.CommentsApi;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
 import com.example.jonsmauricio.eyesfood.data.api.OpenFoodFactsApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.Comment;
@@ -51,9 +52,9 @@ import static java.security.AccessController.getContext;
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
     private Context context;
     private List<ShortFood> items;
-    Retrofit mRestAdapter;
-    Retrofit mRestAdapter2;
+    Retrofit mRestAdapter, mRestAdapter2, mRestAdapter3;
     EyesFoodApi mEyesFoodApi;
+    CommentsApi mCommentsApi;
     OpenFoodFactsApi mOpenFoodFacts;
     private Counter likesCounter;
     private int likes;
@@ -442,6 +443,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     //Retorna un alimento al pinchar en el historial
     //Barcode: Código de barras del alimento a retornar
+
     public void loadFood(final String barcode, final int like) {
         // Crear conexión al servicio REST
         mRestAdapter = new Retrofit.Builder()
@@ -495,9 +497,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         });
     }
 
-    //Carga los comentarios del alimento
-    public void loadComments(final Food alimento, String barcode, final int like, final Product product) {
-        Call<List<Comment>> call = mEyesFoodApi.getComments(barcode);
+    /*public void loadComments(String barcode) {
+        Call<List<Comment>> call = mCommentsApi.getComments(barcode);
         call.enqueue(new Callback<List<Comment>>() {
             @Override
             public void onResponse(Call<List<Comment>> call,
@@ -506,13 +507,43 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                     return;
                 }
                 listaComentarios = response.body();
-                showComments(alimento, listaComentarios, like, product);
+                showComments(listaComentarios);
             }
 
             @Override
             public void onFailure(Call<List<Comment>> call, Throwable t) {
             }
         });
+    }*/
+
+    //Carga los comentarios del alimento
+    public void loadComments(final Food alimento, String barcode, final int like, final Product product) {
+        mRestAdapter3 = new Retrofit.Builder()
+                .baseUrl(CommentsApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(new OkHttpClient.Builder().build())
+                .build();
+
+        // Crear conexión a la API de EyesFood
+        mCommentsApi = mRestAdapter3.create(CommentsApi.class);
+        Call<List<Comment>> call = mCommentsApi.getComments(barcode);
+        call.enqueue(new Callback<List<Comment>>() {
+             @Override
+             public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+                 if (!response.isSuccessful()) {
+                     Log.d("myTag", "Falla en getComment "+ response.message() + response.errorBody());
+                     return;
+                 }
+                 listaComentarios = response.body();
+                 showComments(alimento, listaComentarios, like, product);
+             }
+
+             @Override
+             public void onFailure(Call<List<Comment>> call, Throwable t) {
+
+             }
+         }
+        );
     }
 
     public void showComments(Food alimento, List<Comment> lista, int like, Product product){

@@ -24,6 +24,7 @@ import android.widget.EditText;
 
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
+import com.example.jonsmauricio.eyesfood.data.api.UserDataApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.InsertMeasureBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Measure;
 import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
@@ -37,7 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NewMeasureFragment extends DialogFragment {
 
     Retrofit mRestAdapter;
-    EyesFoodApi mEyesFoodApi;
+    UserDataApi mUserDataApi;
 
     private String userIdFinal;
 
@@ -69,12 +70,12 @@ public class NewMeasureFragment extends DialogFragment {
 
     // Crear conexión al servicio REST
     mRestAdapter = new Retrofit.Builder()
-            .baseUrl(EyesFoodApi.BASE_URL)
+            .baseUrl(UserDataApi.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
     // Crear conexión a la API de EyesFood
-    mEyesFoodApi = mRestAdapter.create(EyesFoodApi.class);
+    mUserDataApi = mRestAdapter.create(UserDataApi.class);
 
     return view;
 }
@@ -206,25 +207,25 @@ public class NewMeasureFragment extends DialogFragment {
         switch(selection){
             case "weight":
                 Log.d("insert","Usuario: "+body.getUserId()+ " Medida: "+body.getMeasure());
-                call = mEyesFoodApi.insertWeight(body);
+                call = mUserDataApi.insertWeight(body);
                 break;
             case "fat":
-                call = mEyesFoodApi.insertFat(body);
+                call = mUserDataApi.insertFat(body);
                 break;
             case "waist":
-                call = mEyesFoodApi.insertWaist(body);
+                call = mUserDataApi.insertWaist(body);
                 break;
             case "a1c":
-                call = mEyesFoodApi.insertA1c(body);
+                call = mUserDataApi.insertA1c(body);
                 break;
             case "glupre":
-                call = mEyesFoodApi.insertPreGlu(body);
+                call = mUserDataApi.insertPreGlu(body);
                 break;
             case "glupost":
-                call = mEyesFoodApi.insertPostGlu(body);
+                call = mUserDataApi.insertPostGlu(body);
                 break;
             case "pressure":
-                call = mEyesFoodApi.insertPressure(body);
+                call = mUserDataApi.insertPressure(body);
                 break;
         }
 

@@ -1,16 +1,28 @@
 package com.example.jonsmauricio.eyesfood.data.api;
 
-import android.provider.ContactsContract;
-
+import com.example.jonsmauricio.eyesfood.data.api.model.Additive;
 import com.example.jonsmauricio.eyesfood.data.api.model.Counter;
-import com.example.jonsmauricio.eyesfood.data.api.model.*;
+import com.example.jonsmauricio.eyesfood.data.api.model.Expert;
+import com.example.jonsmauricio.eyesfood.data.api.model.Food;
+import com.example.jonsmauricio.eyesfood.data.api.model.FoodImage;
+import com.example.jonsmauricio.eyesfood.data.api.model.GmailRegisterBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.GmailUserBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.Help;
+import com.example.jonsmauricio.eyesfood.data.api.model.HistoryFoodBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.Ingredient;
+import com.example.jonsmauricio.eyesfood.data.api.model.InsertFromLikeBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.LoginBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.NewFoodBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.Recommendation;
+import com.example.jonsmauricio.eyesfood.data.api.model.ShortFood;
+import com.example.jonsmauricio.eyesfood.data.api.model.SignUpBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -29,7 +41,7 @@ public interface EyesFoodApi {
     // Esta es la ip de usach alumnos
     // public static final String BASE_URL = "http://158.170.214.219/api.eyesfood.cl/v1/";
     //URL API LOCAL
-    String BASE_URL = "http://201.189.45.8/api.eyesfood.cl/v1/";
+    String BASE_URL = "http://190.21.74.176/api.eyesfood.cl/v1/";
     String ADDITIVE_URL = "https://cl.openfoodfacts.org/aditivo/";
     //URL API WEB
     //String BASE_URL = "https://eyesfood.000webhostapp.com/api.eyesfood.cl/v1/";
@@ -40,6 +52,10 @@ public interface EyesFoodApi {
 
     @POST("users/register")
     Call<User> signUp(@Body SignUpBody signUpBody);
+
+    //Petición que retorna un alimento completo mediante su código de barras
+    @GET("users/{code}")
+    Call<User> getUser(@Path("code") String barcode);
 
     //Petición que retorna un alimento completo mediante su código de barras
     @GET("foods/{barcode}")
@@ -159,14 +175,6 @@ public interface EyesFoodApi {
     @GET("images/{barcode}")
     Call<ArrayList<FoodImage>> getImages(@Path("barcode") String barcode);
 
-    //Retorna los comentarios de un alimento
-    @GET("comments/{barcode}")
-    Call<List<Comment>> getComments(@Path("barcode") String barcode);
-
-    //Inserta una solicitud de edición de alimento
-    @POST("comments/{barcode}")
-    Call<Comment> newComment(@Body CommentBody commentBody, @Path("barcode") String barcode);
-
     //Verifica si el correo de inicio de sesión de gmail o facebook existe en la base de datos de usuarios
     @POST("users/external")
     Call<User> findExternalUser(@Body GmailUserBody gmailUserBody);
@@ -204,95 +212,4 @@ public interface EyesFoodApi {
     //Retorna los expertos
     @GET("help")
     Call<List<Help>> getHelp();
-
-    //Retorna las medidas
-    @GET("measures/weight/{userId}")
-    Call<List<Measure>> getWeight(@Path("userId") String userId);
-
-    @GET("measures/fat/{userId}")
-    Call<List<Measure>> getFat(@Path("userId") String userId);
-
-    @GET("measures/waist/{userId}")
-    Call<List<Measure>> getWaist(@Path("userId") String userId);
-
-    @GET("measures/a1c/{userId}")
-    Call<List<Measure>> getA1c(@Path("userId") String userId);
-
-    @GET("measures/preglucose/{userId}")
-    Call<List<Measure>> getPreglucose(@Path("userId") String userId);
-
-    @GET("measures/postglucose/{userId}")
-    Call<List<Measure>> getPostglucose(@Path("userId") String userId);
-
-    @GET("measures/pressure/{userId}")
-    Call<List<Measure>> getPressure(@Path("userId") String userId);
-
-    //Edita las medidas
-    @POST("measures/height/edit")
-    Call<Measure> editHeight(@Body EditMeasureBody editMeasureBody);
-
-    @POST("measures/weight/edit")
-    Call<Measure> editWeight(@Body EditMeasureBody editMeasureBody);
-
-    @POST("measures/fat/edit")
-    Call<Measure> editFat(@Body EditMeasureBody editMeasureBody);
-
-    @POST("measures/waist/edit")
-    Call<Measure> editWaist(@Body EditMeasureBody editMeasureBody);
-
-    @POST("measures/a1c/edit")
-    Call<Measure> editA1c(@Body EditMeasureBody editMeasureBody);
-
-    @POST("measures/preglucose/edit")
-    Call<Measure> editPreGlu(@Body EditMeasureBody editMeasureBody);
-
-    @POST("measures/postglucose/edit")
-    Call<Measure> editPostGlu(@Body EditMeasureBody editMeasureBody);
-
-    @POST("measures/pressure/edit")
-    Call<Measure> editPressure(@Body EditMeasureBody editMeasureBody);
-
-    //Eliminar datos, se hace con POST porque el delete no funciona Stream was reset:internal error
-    @POST("measures/weight/delete/{measureId}")
-    Call<Measure> deleteWeight(@Path("measureId") int measureId);
-
-    @POST("measures/fat/delete/{measureId}")
-    Call<Measure> deleteFat(@Path("measureId") int measureId);
-
-    @POST("measures/waist/delete/{measureId}")
-    Call<Measure> deleteWaist(@Path("measureId") int measureId);
-
-    @POST("measures/a1c/delete/{measureId}")
-    Call<Measure> deleteA1c(@Path("measureId") int measureId);
-
-    @POST("measures/preglucose/delete/{measureId}")
-    Call<Measure> deletePreGlu(@Path("measureId") int measureId);
-
-    @POST("measures/postglucose/delete/{measureId}")
-    Call<Measure> deletePostGlu(@Path("measureId") int measureId);
-
-    @POST("measures/pressure/delete/{measureId}")
-    Call<Measure> deletePressure(@Path("measureId") int measureId);
-
-    //Insertar datos
-    @POST("measures/weight")
-    Call<Measure> insertWeight(@Body InsertMeasureBody insertMeasureBody);
-
-    @POST("measures/fat")
-    Call<Measure> insertFat(@Body InsertMeasureBody insertMeasureBody);
-
-    @POST("measures/waist")
-    Call<Measure> insertWaist(@Body InsertMeasureBody insertMeasureBody);
-
-    @POST("measures/a1c")
-    Call<Measure> insertA1c(@Body InsertMeasureBody insertMeasureBody);
-
-    @POST("measures/preglucose")
-    Call<Measure> insertPreGlu(@Body InsertMeasureBody insertMeasureBody);
-
-    @POST("measures/postglucose")
-    Call<Measure> insertPostGlu(@Body InsertMeasureBody insertMeasureBody);
-
-    @POST("measures/pressure")
-    Call<Measure> insertPressure(@Body InsertMeasureBody insertMeasureBody);
 }

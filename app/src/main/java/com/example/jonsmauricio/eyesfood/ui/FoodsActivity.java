@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jonsmauricio.eyesfood.R;
+import com.example.jonsmauricio.eyesfood.data.api.CommentsApi;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
 import com.example.jonsmauricio.eyesfood.data.api.OpenFoodFactsApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.Additive;
@@ -98,8 +99,9 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     private List<Comment> listaComentarios;
     ImageView ivFoodPhoto;
 
-    Retrofit mRestAdapter;
+    Retrofit mRestAdapter, mRestAdapter2;
     private EyesFoodApi mEyesFoodApi;
+    private CommentsApi mCommentsApi;
     private Food Alimento;
     private Product product;
     private NewFoodBody pendiente;
@@ -109,6 +111,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     private int likesCount;
     private Counter dislikesCounter;
     private int dislikesCount;
+    private String tipo;
 
     //Permissions
     private static final int PERMISSION_CODE = 123;
@@ -199,8 +202,16 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        mRestAdapter2 = new Retrofit.Builder()
+                .baseUrl(CommentsApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
         // Crear conexión a la API de EyesFood
         mEyesFoodApi = mRestAdapter.create(EyesFoodApi.class);
+
+        // Crear conexión a la API de Comentarios
+        mCommentsApi = mRestAdapter2.create(CommentsApi.class);
 
         Intent i = getIntent();
         Bundle b = i.getExtras();
@@ -222,12 +233,14 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
                 like.setVisibility(View.GONE);
                 dislike.setVisibility(View.GONE);
                 infoGeneralRating.setVisibility(View.GONE);
+                tipo = "2";
             }else{
                 collapser.setTitle(product.getProduct_name()); // Cambiar título
                 //setTitle(Nombre);
                 CodigoBarras = product.getCodigo();
                 MeGusta = (int) b.get("MeGusta");
                 Log.d("myTag","Like: "+MeGusta);
+                tipo = "1";
             }
             //showFood(Alimento);
         }
@@ -486,7 +499,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
 
     //Carga los comentarios del alimento
     public void loadComments(String barcode) {
-        Call<List<Comment>> call = mEyesFoodApi.getComments(barcode);
+        Call<List<Comment>> call = mCommentsApi.getComments(barcode);
         call.enqueue(new Callback<List<Comment>>() {
             @Override
             public void onResponse(Call<List<Comment>> call,
@@ -741,6 +754,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
         Bundle bundle = new Bundle();
         bundle.putSerializable("Alimento", Alimento);
         bundle.putSerializable("Product", product);
+        bundle.putSerializable("tipo", tipo);
         // set Fragmentclass Arguments
 
         FragmentManager fragmentManager = getSupportFragmentManager();

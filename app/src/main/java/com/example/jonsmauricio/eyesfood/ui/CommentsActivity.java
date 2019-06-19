@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jonsmauricio.eyesfood.R;
+import com.example.jonsmauricio.eyesfood.data.api.CommentsApi;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.Additive;
 import com.example.jonsmauricio.eyesfood.data.api.model.Comment;
@@ -62,7 +63,9 @@ public class CommentsActivity extends AppCompatActivity {
     private ArrayAdapter<Comment> adaptadorComments;
 
     Retrofit mRestAdapter;
+    Retrofit mRestAdapter2;
     EyesFoodApi mEyesFoodApi;
+    CommentsApi mCommentsApi;
 
     private int MeGusta;
 
@@ -109,8 +112,15 @@ public class CommentsActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        mRestAdapter2 = new Retrofit.Builder()
+                .baseUrl(CommentsApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
         // Crear conexión a la API de EyesFood
         mEyesFoodApi = mRestAdapter.create(EyesFoodApi.class);
+
+        mCommentsApi = mRestAdapter2.create(CommentsApi.class);
 
         if(b != null){
             Alimento = (Food) b.get("Alimento");
@@ -153,7 +163,7 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     public void sendComment(String barcode, String comentario){
-        Call<Comment> call = mEyesFoodApi.newComment(new CommentBody(userIdFinal, comentario), barcode);
+        Call<Comment> call = mCommentsApi.newComment(new CommentBody(userIdFinal, comentario), barcode);
         call.enqueue(new Callback<Comment>() {
             @Override
             public void onResponse(Call<Comment> call, Response<Comment> response) {
@@ -175,7 +185,7 @@ public class CommentsActivity extends AppCompatActivity {
 
     //Carga los comentarios del alimento
     public void loadComments(String barcode) {
-        Call<List<Comment>> call = mEyesFoodApi.getComments(barcode);
+        Call<List<Comment>> call = mCommentsApi.getComments(barcode);
         call.enqueue(new Callback<List<Comment>>() {
             @Override
             public void onResponse(Call<List<Comment>> call,

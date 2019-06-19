@@ -17,6 +17,7 @@ import android.widget.ListView;
 
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
+import com.example.jonsmauricio.eyesfood.data.api.UserDataApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.EditMeasureBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.InsertMeasureBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Measure;
@@ -44,7 +45,7 @@ public class TabSpecific extends Fragment{
 
     private String userIdFinal;
     Retrofit mRestAdapter;
-    EyesFoodApi mEyesFoodApi;
+    UserDataApi mUserDataApi;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,12 +56,12 @@ public class TabSpecific extends Fragment{
 
         // Crear conexión al servicio REST
         mRestAdapter = new Retrofit.Builder()
-                .baseUrl(EyesFoodApi.BASE_URL)
+                .baseUrl(UserDataApi.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         // Crear conexión a la API de EyesFood
-        mEyesFoodApi = mRestAdapter.create(EyesFoodApi.class);
+        mUserDataApi = mRestAdapter.create(UserDataApi.class);
 
         loadA1c(userIdFinal);
         listaEspecificos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -179,7 +180,7 @@ public class TabSpecific extends Fragment{
     }
 
     public void loadA1c(String userId){
-        Call<List<Measure>> call = mEyesFoodApi.getA1c(userId);
+        Call<List<Measure>> call = mUserDataApi.getA1c(userId);
         call.enqueue(new Callback<List<Measure>>() {
             @Override
             public void onResponse(Call<List<Measure>> call,
@@ -200,7 +201,7 @@ public class TabSpecific extends Fragment{
     }
 
     private void loadGluPre(String userId) {
-        Call<List<Measure>> call = mEyesFoodApi.getPreglucose(userId);
+        Call<List<Measure>> call = mUserDataApi.getPreglucose(userId);
         call.enqueue(new Callback<List<Measure>>() {
             @Override
             public void onResponse(Call<List<Measure>> call,
@@ -221,7 +222,7 @@ public class TabSpecific extends Fragment{
     }
 
     private void loadGluPost(String userId) {
-        Call<List<Measure>> call = mEyesFoodApi.getPostglucose(userId);
+        Call<List<Measure>> call = mUserDataApi.getPostglucose(userId);
         call.enqueue(new Callback<List<Measure>>() {
             @Override
             public void onResponse(Call<List<Measure>> call,
@@ -242,7 +243,7 @@ public class TabSpecific extends Fragment{
     }
 
     private void loadPressure(String userId) {
-        Call<List<Measure>> call = mEyesFoodApi.getPressure(userId);
+        Call<List<Measure>> call = mUserDataApi.getPressure(userId);
         call.enqueue(new Callback<List<Measure>>() {
             @Override
             public void onResponse(Call<List<Measure>> call,
@@ -317,16 +318,16 @@ public class TabSpecific extends Fragment{
         Call<Measure> call = null;
         switch(selection){
             case "a1c":
-                call = mEyesFoodApi.editA1c(body);
+                call = mUserDataApi.editA1c(body);
                 break;
             case "preglucose":
-                call = mEyesFoodApi.editPreGlu(body);
+                call = mUserDataApi.editPreGlu(body);
                 break;
             case "postglucose":
-                call = mEyesFoodApi.editPostGlu(body);
+                call = mUserDataApi.editPostGlu(body);
                 break;
             case "pressure":
-                call = mEyesFoodApi.editPressure(body);
+                call = mUserDataApi.editPressure(body);
                 break;
         }
         call.enqueue(new Callback<Measure>() {
@@ -352,16 +353,16 @@ public class TabSpecific extends Fragment{
         Call<Measure> call = null;
         switch(selection){
             case "a1c":
-                call = mEyesFoodApi.insertA1c(body);
+                call = mUserDataApi.insertA1c(body);
                 break;
             case "preglucose":
-                call = mEyesFoodApi.insertPreGlu(body);
+                call = mUserDataApi.insertPreGlu(body);
                 break;
             case "postglucose":
-                call = mEyesFoodApi.insertPostGlu(body);
+                call = mUserDataApi.insertPostGlu(body);
                 break;
             case "pressure":
-                call = mEyesFoodApi.insertPressure(body);
+                call = mUserDataApi.insertPressure(body);
                 break;
         }
         call.enqueue(new Callback<Measure>() {

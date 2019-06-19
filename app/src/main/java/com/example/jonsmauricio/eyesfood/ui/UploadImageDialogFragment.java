@@ -35,6 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +73,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static android.app.Activity.RESULT_OK;
 import static com.example.jonsmauricio.eyesfood.R.id.barcode_image_view;
 import static com.example.jonsmauricio.eyesfood.R.id.imageView;
+import static com.example.jonsmauricio.eyesfood.R.id.rbFront;
 
 public class UploadImageDialogFragment extends DialogFragment {
     /** The system calls this to get the DialogFragment's layout, regardless
@@ -85,9 +87,11 @@ public class UploadImageDialogFragment extends DialogFragment {
     String absolutePath;
 
     Button fromCamera, fromGallery;
+    RadioButton front, ingredients, nutrients;
     ImageView photoSelected;
 
     Food Alimento;
+    String tipoAlimento;
     String barCode;
 
     Retrofit mRestAdapter;
@@ -107,9 +111,13 @@ public class UploadImageDialogFragment extends DialogFragment {
         //barCode = getArguments().getString("barCode");
 
         Toolbar toolbar = view.findViewById(R.id.toolbarUploadImages);
+
         toolbar.setTitle(getResources().getString(R.string.title_upload_images));
 
         Alimento = (Food) getArguments().getSerializable("Alimento");
+        //1 aprobado
+        //2 pendiente
+        tipoAlimento = (String) getArguments().getSerializable("tipo");
         barCode = Alimento.getBarCode();
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -141,6 +149,9 @@ public class UploadImageDialogFragment extends DialogFragment {
         fromCamera = getView().findViewById(R.id.btUploadCamera);
         fromGallery = getView().findViewById(R.id.btUploadGallery);
         photoSelected = getView().findViewById(R.id.iv_upload_photo_selected);
+        front = getView().findViewById(R.id.rbFront);
+        ingredients = getView().findViewById(R.id.rbIngredients);
+        nutrients = getView().findViewById(R.id.rbNutrients);
 
         fromCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -266,13 +277,25 @@ public class UploadImageDialogFragment extends DialogFragment {
         if (id == R.id.sendFood) {
             if(filePath == null){
                 showEmptyUploadDialog();
+            }else if (!front.isChecked() && !ingredients.isChecked() && !nutrients.isChecked()){
+                showEmptyRadioDialog();
             }
             else {
                 //Uploading code
                 try {
+                    String url;
+                    if (front.isChecked()){
+                        url = urlUpload + "/0/";
+                    }else if(ingredients.isChecked()){
+                        url = urlUpload + "/1/";
+                    }else{
+                        url = urlUpload + "/2/";
+                    }
+                    url = url +tipoAlimento;
+                    Log.d("myTag", url);
                     String uploadId = UUID.randomUUID().toString();
                         //Creating a multi part request
-                        new MultipartUploadRequest(getContext(), uploadId, urlUpload)
+                        new MultipartUploadRequest(getContext(), uploadId, url)
                                 .addFileToUpload(absolutePath, "myFile") //Adding file
                                 .setNotificationConfig(new UploadNotificationConfig()
                                         .setCompletedMessage(getResources().getString(R.string.body_notification_upload_images))
@@ -293,6 +316,15 @@ public class UploadImageDialogFragment extends DialogFragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showEmptyRadioDialog() {
+        new AlertDialog.Builder(getContext())
+                .setIcon(null)
+                .setTitle(getResources().getString(R.string.title_failed_solitude_new_foods))
+                .setMessage(getResources().getString(R.string.message_failed_solitude_upload_rb))
+                .setPositiveButton(getResources().getString(R.string.ok_dialog), null)
+                .show();
     }
 
     public void showSuccesDialog(){
