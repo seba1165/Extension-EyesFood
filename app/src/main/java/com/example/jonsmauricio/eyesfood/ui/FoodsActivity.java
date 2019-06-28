@@ -35,6 +35,7 @@ import com.example.jonsmauricio.eyesfood.data.api.model.Comment;
 import com.example.jonsmauricio.eyesfood.data.api.model.Counter;
 import com.example.jonsmauricio.eyesfood.data.api.model.Food;
 import com.example.jonsmauricio.eyesfood.data.api.model.FoodImage;
+import com.example.jonsmauricio.eyesfood.data.api.model.FoodStore;
 import com.example.jonsmauricio.eyesfood.data.api.model.HistoryFoodBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Ingredient;
 import com.example.jonsmauricio.eyesfood.data.api.model.InsertFromLikeBody;
@@ -44,6 +45,7 @@ import com.example.jonsmauricio.eyesfood.data.api.model.Product;
 import com.example.jonsmauricio.eyesfood.data.api.model.ProductResponse;
 import com.example.jonsmauricio.eyesfood.data.api.model.Recommendation;
 import com.example.jonsmauricio.eyesfood.data.api.model.ShortFood;
+import com.example.jonsmauricio.eyesfood.data.api.model.Store;
 import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
 import com.rapidapi.rapidconnect.Argument;
 import com.rapidapi.rapidconnect.RapidApiConnect;
@@ -92,11 +94,12 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
     private String userIdFinal;
 
     //Para los botonos
-    Button additives, recommendations, images, like, dislike, edits;
+    Button additives, recommendations, images, like, dislike, edits, stores;
 
     private List<Recommendation> listaRecomendaciones;
     private ArrayList<FoodImage> listaImagenes;
     private List<Comment> listaComentarios;
+    private List<Store> listaTiendas;
     ImageView ivFoodPhoto;
 
     Retrofit mRestAdapter, mRestAdapter2;
@@ -177,6 +180,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
         tvIngredientes = (TextView) findViewById(R.id.tvFoodsIngredients);
 
         //Para los botones
+        stores = (Button) findViewById(R.id.btFoodsStores);
         additives = (Button) findViewById(R.id.btFoodsAdditives);
         recommendations = (Button) findViewById(R.id.btFoodsRecommendations);
         images = (Button) findViewById(R.id.btFoodsImages);
@@ -184,6 +188,7 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
         dislike = (Button) findViewById(R.id.btFoodsDisLike);
         edits = (Button) findViewById(R.id.btFoodsEdits);
 
+        stores.setOnClickListener(this);
         additives.setOnClickListener(this);
         recommendations.setOnClickListener(this);
         images.setOnClickListener(this);
@@ -342,21 +347,24 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
 
     //Calcula la cantidad de porciones por envase
     private float calculatePortions(String quantity, String portion) {
+        Log.d("myTag","Cantidad: "+quantity+" Porcion: "+portion);
         float portions = 0;
-        String[] cantidad =  quantity.split(" ");
-        List<String> porcion = separaPorcion(portion);
-        int porc = Integer.parseInt(porcion.get(0));
-        int cant;
-        if (cantidad.length==2){
-            cant = Integer.parseInt(cantidad[0]);
-        }else{
-            List<String> cantidad2 = separaPorcion(quantity);
-            cant = Integer.parseInt(cantidad2.get(0));
-        }
-        if(cant<porc){
-            portions = (cant*1000)/porc;
-        }else{
-            portions = cant/porc;
+        if (portion!=null){
+            String[] cantidad =  quantity.split(" ");
+            List<String> porcion = separaPorcion(portion);
+            int porc = Integer.parseInt(porcion.get(0));
+            int cant;
+            if (cantidad.length==2){
+                cant = Integer.parseInt(cantidad[0]);
+            }else{
+                List<String> cantidad2 = separaPorcion(quantity);
+                cant = Integer.parseInt(cantidad2.get(0));
+            }
+            if(cant<porc){
+                portions = (cant*1000)/porc;
+            }else{
+                portions = cant/porc;
+            }
         }
         return portions;
     }
@@ -546,6 +554,10 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
                 loadComments(CodigoBarras);
                 break;
             }
+            case R.id.btFoodsStores: {
+                loadStores(CodigoBarras);
+                break;
+            }
             case R.id.btFoodsEdits: {
                 loadEdits(CodigoBarras);
                 break;
@@ -625,6 +637,44 @@ public class FoodsActivity extends AppCompatActivity implements View.OnClickList
                 isFoodInHistory(userIdFinal, CodigoBarras);
                 break;
             }
+        }
+    }
+
+    private void loadStores(final String codigoBarras) {
+        Call<List<Store>> call = mEyesFoodApi.getStoresProduct(codigoBarras);
+        call.enqueue(new Callback<List<Store>>() {
+            @Override
+            public void onResponse(Call<List<Store>> call, Response<List<Store>> response) {
+                if (!response.isSuccessful()) {
+                    return;
+                }
+                listaTiendas = response.body();
+                showListStores(listaTiendas, codigoBarras);
+            }
+
+            @Override
+            public void onFailure(Call<List<Store>> call, Throwable t) {
+                Log.d("Falla Retrofit", "Falla en new food solitude");
+                Log.d("Falla", t.getMessage());
+            }
+        });
+    }
+
+    private void showListStores(List<Store> listaTiendas, String codigoBarras) {
+        if (listaTiendas.size()>0){
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            StoresFragment storeFragment = new StoresFragment();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            // For a little polish, specify a transition animation
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            Bundle bundle = new Bundle();
+            bundle.putInt("Menu", 2);
+            bundle.putString("barcode", codigoBarras);
+            storeFragment.setArguments(bundle);
+            transaction.add(android.R.id.content, storeFragment, "fragmento_tiendas").addToBackStack(null);
+            transaction.commit();
+        }else{
+            hacerToast("No existen tiendas con este alimento registrado");
         }
     }
 

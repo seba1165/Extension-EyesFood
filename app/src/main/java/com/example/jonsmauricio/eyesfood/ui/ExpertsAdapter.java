@@ -1,7 +1,6 @@
 package com.example.jonsmauricio.eyesfood.ui;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +8,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
-import com.example.jonsmauricio.eyesfood.data.api.model.Comment;
 import com.example.jonsmauricio.eyesfood.data.api.model.Expert;
-import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -48,8 +44,8 @@ public class ExpertsAdapter extends ArrayAdapter<Expert> {
 
         // Referencias UI.
         ImageView avatar = convertView.findViewById(R.id.ivExpertsAvatar);
-        TextView name = convertView.findViewById(R.id.tvExpertsName);
-        TextView specialty = convertView.findViewById(R.id.tvExpertsSpecialty);
+        TextView name = convertView.findViewById(R.id.tvStoresName);
+        TextView specialty = convertView.findViewById(R.id.tvStoresPage);
         TextView phone = convertView.findViewById(R.id.tvExpertsPhone);
         RatingBar ratingBar = convertView.findViewById(R.id.rbExpertsRating);
 

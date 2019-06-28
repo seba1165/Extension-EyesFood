@@ -59,7 +59,6 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,8 +68,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class HistoryActivity extends AppCompatActivity
         implements OnClickListener, ItemClickListener, GoogleApiClient.OnConnectionFailedListener{
 
-    Retrofit mRestAdapter;
-    private Retrofit mOpenRestAdapter;
+    Retrofit mRestAdapter, mOpenRestAdapter;
     EyesFoodApi mEyesFoodApi;
     private OpenFoodFactsApi mOpenFoodApi;
 
@@ -905,6 +903,18 @@ public class HistoryActivity extends AppCompatActivity
                 showProgress(false,"");
             }
             setTitle = 0;
+        }else if(title.equals(getResources().getString(R.string.nav_stores))){
+            showSelectedDialog(4);
+            //Si vengo del perfil oculto el recycler
+            if (perfil == 1) {
+                showProgress(false,"PERFIL");
+                fab.setVisibility(View.GONE);
+                fabProfile.setVisibility(View.VISIBLE);
+            }
+            else{
+                showProgress(false,"");
+            }
+            setTitle = 0;
         }
         else{
             if(perfil == 1){
@@ -985,6 +995,7 @@ public class HistoryActivity extends AppCompatActivity
 
         ExpertsFragment expertsFragment = new ExpertsFragment();
         HelpFragment helpFragment = new HelpFragment();
+        StoresFragment storeFragment = new StoresFragment();
 
         NewMeasureFragment newMeasureFragment = new NewMeasureFragment();
         EditMeasureFragment editMeasureFragment = new EditMeasureFragment();
@@ -1017,6 +1028,12 @@ public class HistoryActivity extends AppCompatActivity
         else if (seleccion ==3){
             //transaction.replace(android.R.id.content, helpFragment);
             transaction.add(android.R.id.content, editMeasureFragment, "fragmento_editar_medida").addToBackStack(null);
+        }else if (seleccion ==4){
+            Bundle bundle = new Bundle();
+            bundle.putInt("Menu", 1);
+            storeFragment.setArguments(bundle);
+            //transaction.replace(android.R.id.content, expertsFragment);
+            transaction.add(android.R.id.content, storeFragment, "fragmento_tiendas").addToBackStack(null);
         }
         transaction.commit();
     }

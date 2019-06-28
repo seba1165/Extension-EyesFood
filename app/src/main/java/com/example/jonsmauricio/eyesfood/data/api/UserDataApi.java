@@ -14,7 +14,7 @@ import retrofit2.http.Path;
 
 public interface UserDataApi {
 
-    String BASE_URL = "http://190.21.74.176/api.eyesfood.userdata.cl/v1/";
+    String BASE_URL = "http://201.189.10.122/api.eyesfood.userdata.cl/v1/";
 
     //Retorna las medidas
     @GET("measures/weight/{userId}")

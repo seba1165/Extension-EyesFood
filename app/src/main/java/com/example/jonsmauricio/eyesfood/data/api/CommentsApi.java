@@ -13,7 +13,7 @@ import retrofit2.http.Path;
 
 public interface CommentsApi {
 
-    String BASE_URL = "http://190.21.74.176/api.eyesfood.comments.cl/v1/";
+    String BASE_URL = "http://201.189.10.122/api.eyesfood.comments.cl/v1/";
 
     //Retorna los comentarios de un alimento
     @GET("comments/{barcode}")

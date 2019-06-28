@@ -497,25 +497,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         });
     }
 
-    /*public void loadComments(String barcode) {
-        Call<List<Comment>> call = mCommentsApi.getComments(barcode);
-        call.enqueue(new Callback<List<Comment>>() {
-            @Override
-            public void onResponse(Call<List<Comment>> call,
-                                   Response<List<Comment>> response) {
-                if (!response.isSuccessful()) {
-                    return;
-                }
-                listaComentarios = response.body();
-                showComments(listaComentarios);
-            }
-
-            @Override
-            public void onFailure(Call<List<Comment>> call, Throwable t) {
-            }
-        });
-    }*/
-
     //Carga los comentarios del alimento
     public void loadComments(final Food alimento, String barcode, final int like, final Product product) {
         mRestAdapter3 = new Retrofit.Builder()

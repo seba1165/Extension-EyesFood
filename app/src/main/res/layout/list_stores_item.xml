@@ -10,12 +10,11 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="8dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/ivExpertsAvatar"
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/ivStoresAvatar"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true" />
 
     <TextView
         android:id="@+id/tvStoresName"
@@ -26,7 +25,7 @@
         tools:text="Alexander Pierrot" />
 
     <RatingBar
-        android:id="@+id/rbExpertsRating"
+        android:id="@+id/rbStoresRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="?android:attr/ratingBarStyleSmall"
@@ -48,13 +47,13 @@
         tools:text="Nutricionista" />
 
     <TextView
-        android:id="@+id/tvExpertsPhone"
+        android:id="@+id/tvStoresPhone"
+        style="@style/BodyRegular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tvStoresName"
         android:layout_below="@+id/tvStoresPage"
+        android:layout_alignLeft="@+id/tvStoresName"
         android:paddingTop="8dp"
-        style="@style/BodyRegular"
         tools:text="(+56) 9 8 567 54 12" />
 
 </RelativeLayout>

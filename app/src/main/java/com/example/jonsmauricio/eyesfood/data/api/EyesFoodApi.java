@@ -5,6 +5,7 @@ import com.example.jonsmauricio.eyesfood.data.api.model.Counter;
 import com.example.jonsmauricio.eyesfood.data.api.model.Expert;
 import com.example.jonsmauricio.eyesfood.data.api.model.Food;
 import com.example.jonsmauricio.eyesfood.data.api.model.FoodImage;
+import com.example.jonsmauricio.eyesfood.data.api.model.FoodStore;
 import com.example.jonsmauricio.eyesfood.data.api.model.GmailRegisterBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.GmailUserBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Help;
@@ -16,6 +17,7 @@ import com.example.jonsmauricio.eyesfood.data.api.model.NewFoodBody;
 import com.example.jonsmauricio.eyesfood.data.api.model.Recommendation;
 import com.example.jonsmauricio.eyesfood.data.api.model.ShortFood;
 import com.example.jonsmauricio.eyesfood.data.api.model.SignUpBody;
+import com.example.jonsmauricio.eyesfood.data.api.model.Store;
 import com.example.jonsmauricio.eyesfood.data.api.model.User;
 
 import java.util.ArrayList;
@@ -41,7 +43,8 @@ public interface EyesFoodApi {
     // Esta es la ip de usach alumnos
     // public static final String BASE_URL = "http://158.170.214.219/api.eyesfood.cl/v1/";
     //URL API LOCAL
-    String BASE_URL = "http://190.21.74.176/api.eyesfood.cl/v1/";
+    String BASE_URL = "http://201.189.10.122/api.eyesfood.cl/v1/";
+    String BASE_URL_ADMIN = "http://201.189.10.122/AdminEyesFood/";
     String ADDITIVE_URL = "https://cl.openfoodfacts.org/aditivo/";
     //URL API WEB
     //String BASE_URL = "https://eyesfood.000webhostapp.com/api.eyesfood.cl/v1/";
@@ -212,4 +215,16 @@ public interface EyesFoodApi {
     //Retorna los expertos
     @GET("help")
     Call<List<Help>> getHelp();
+
+    //Retorna las tiendas
+    @GET("stores")
+    Call<List<Store>> getStores();
+
+    //Retorna las tiendas que tienen un alimento particular
+    @GET("stores/product/{barcode}")
+    Call<List<Store>> getStoresProduct(@Path("barcode") String barcode);
+
+    //Retorna las alimentos de una tienda
+    @GET("stores/{idTienda}")
+    Call<List<FoodStore>> getFoodsStore(@Path("idTienda") String idTienda);
 }
