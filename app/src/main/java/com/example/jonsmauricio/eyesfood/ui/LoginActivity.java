@@ -171,14 +171,14 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
             }
         });*/
 
-        ProfileTracker profileTracker = new ProfileTracker() {
+        /*ProfileTracker profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
                 if (currentProfile != null) {
                     displayProfileInfo(currentProfile);
                 }
             }
-        };
+        };*/
 
         signInButtonGmail = (SignInButton) findViewById(R.id.bt_login_gmail);
         signInButtonGmail.setSize(SignInButton.SIZE_WIDE);
@@ -205,14 +205,14 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
         mSignUp.setOnClickListener(this);
     }
 
-    private void displayProfileInfo(Profile currentProfile) {
+ /*   private void displayProfileInfo(Profile currentProfile) {
         nombre = currentProfile.getFirstName();
         apellido = currentProfile.getLastName();
         fotoString = currentProfile.getProfilePictureUri(100, 100).toString();
 
         Log.d("Facebook", "Profile Tracker: "+ nombre + " " + apellido + " " + fotoString);
 
-    }
+    }*/
 
     private void requestEmail(AccessToken currentAccessToken) {
         GraphRequest request = GraphRequest.newMeRequest(currentAccessToken, new GraphRequest.GraphJSONObjectCallback() {
@@ -456,14 +456,19 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener,
                     Log.d("myTag",nombre + " " + apellido + " " + correo + " " + fotoString);
                     registerGmailUser(nombre, apellido, correo, fotoString);
                     return;
+                }else{
+                    Log.d("myTag","Existe");
+                    Log.d("myTag",nombre + " " + apellido + " " + correo + " " + fotoString);
+                    User user = response.body();
+                    user.setEmail(correo);
+                    user.setName(nombre);
+                    user.setSurName(apellido);
+                    user.setPhoto(fotoString);
+                    user.setSession(session);
+                    SessionPrefs.get(LoginActivity.this).saveUser(user);
+                    // Ir a la pantalla principal
+                    showHistoryScreen();
                 }
-                Log.d("myTag","Existe");
-                Log.d("myTag",nombre + " " + apellido + " " + correo + " " + fotoString);
-                User user = response.body();
-                user.setSession(session);
-                SessionPrefs.get(LoginActivity.this).saveUser(user);
-                // Ir a la pantalla principal
-                showHistoryScreen();
             }
 
             @Override

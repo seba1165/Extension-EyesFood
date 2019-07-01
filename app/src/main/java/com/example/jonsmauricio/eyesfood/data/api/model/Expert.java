@@ -31,6 +31,7 @@ public class Expert implements Serializable{
     private String webPage;
     @SerializedName("reputacion")
     private float reputation;
+    private int foods;
 
     public Expert(int expertId, String name, String lastName, String email, String photo, String specialty, String phone,
                   String adress, String description, String webPage, float reputation) {
@@ -89,5 +90,13 @@ public class Expert implements Serializable{
 
     public float getReputation() {
         return reputation;
+    }
+
+    public int getFoods() {
+        return foods;
+    }
+
+    public void setFoods(int foods) {
+        this.foods = foods;
     }
 }

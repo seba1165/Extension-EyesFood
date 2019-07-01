@@ -72,7 +72,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.jonsmauricio.eyesfood.R.id.barcode_image_view;
-import static com.example.jonsmauricio.eyesfood.R.id.imageView;
+import static com.example.jonsmauricio.eyesfood.R.id.ivProfile;
 import static com.example.jonsmauricio.eyesfood.R.id.rbFront;
 
 public class UploadImageDialogFragment extends DialogFragment {

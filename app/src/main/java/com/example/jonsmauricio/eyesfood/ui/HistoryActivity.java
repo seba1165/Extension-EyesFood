@@ -55,6 +55,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.zxing.client.android.CaptureActivity;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +91,7 @@ public class HistoryActivity extends AppCompatActivity
 
     private ProgressBar progressBar;
     private ProgressDialog progressDialog;
-    private TextView emptyStateText;
+    private TextView emptyStateText, nombre, correo;
     private ImageView avatar;
     private String drawerTitle;
 
@@ -125,12 +126,16 @@ public class HistoryActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
         //navigationView.setNavigationItemSelectedListener(this);
 
         recycler = (RecyclerView) findViewById(R.id.reciclador);
         progressBar = (ProgressBar) findViewById(R.id.pbMainProgress);
         progressDialog= new ProgressDialog(this);
         emptyStateText = (TextView) findViewById(R.id.tvHistoryEmptyState);
+        nombre = headerView.findViewById(R.id.tvNameProfile);
+        correo = headerView.findViewById(R.id.tvEmailProfile);
+        avatar = headerView.findViewById(R.id.ivProfile);
 
         // Crear conexión al servicio REST EyesFood
         mRestAdapter = new Retrofit.Builder()
@@ -184,6 +189,18 @@ public class HistoryActivity extends AppCompatActivity
         }
         if (savedInstanceState == null) {
             selectItem(drawerTitle);
+        }
+
+        nombre.setText(SessionPrefs.get(this).getUserName());
+        correo.setText(SessionPrefs.get(this).getUserEmail());
+        if (SessionPrefs.get(this).getUserPref().equals("EyesFood")){
+            Picasso.with(this)
+                    .load(EyesFoodApi.BASE_URL_PHOTO + SessionPrefs.get(this).getUserPhoto())
+                    .into(avatar);
+        }else{
+            Picasso.with(this)
+                    .load(SessionPrefs.get(this).getUserPhoto())
+                    .into(avatar);
         }
     }
 

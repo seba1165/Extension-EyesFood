@@ -59,7 +59,7 @@ public class ExpertsAdapter extends ArrayAdapter<Expert> {
         name.setText(currentExpert.getName() + " " + currentExpert.getLastName());
         ratingBar.setRating(currentExpert.getReputation());
         specialty.setText(currentExpert.getSpecialty());
-        phone.setText(currentExpert.getPhone());
+        phone.setText("Alimentos Aprobados: "+currentExpert.getFoods());
 
         return convertView;
     }

@@ -46,6 +46,7 @@
     <string name="facebook_app_id">1858275051152501</string>
     <string name="fb_login_protocol_scheme">fb1858275051152501</string>
     <string name="title_activity_foods">Alimentos</string>
+    <string name="title_activity_foods_ap">Alimentos Aprobados</string>
 
     <string name="roboto_thin">sans-serif-thin</string>
     <string name="roboto_light">sans-serif-light</string>
@@ -122,7 +123,9 @@
     <string name="new_foods_ingredients">Ingredientes: </string>
 
     <string name="title_new_foods_question">El producto aún no está agregado</string>
+    <string name="title_new_consult_question">Nueva consulta</string>
     <string name="message_new_foods_question">¿Deseas agregarlo?</string>
+    <string name="message_new_consult_question">¿Desea solicitar una consulta con el experto?</string>
 
     <string name="title_new_foods">Subir alimento</string>
     <string name="title_success_solitude_new_foods">Solicitud enviada</string>
@@ -233,5 +236,6 @@
     <string name="image_front">Frontal</string>
     <string name="image_ingredients">Ingredientes</string>
     <string name="image_nutrients" >Nutrientes</string>
+    <string name="consulta" >Consulta</string>
 
 </resources>

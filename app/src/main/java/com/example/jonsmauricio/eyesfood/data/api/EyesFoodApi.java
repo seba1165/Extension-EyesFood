@@ -1,6 +1,7 @@
 package com.example.jonsmauricio.eyesfood.data.api;
 
 import com.example.jonsmauricio.eyesfood.data.api.model.Additive;
+import com.example.jonsmauricio.eyesfood.data.api.model.Consult;
 import com.example.jonsmauricio.eyesfood.data.api.model.Counter;
 import com.example.jonsmauricio.eyesfood.data.api.model.Expert;
 import com.example.jonsmauricio.eyesfood.data.api.model.Food;
@@ -43,8 +44,9 @@ public interface EyesFoodApi {
     // Esta es la ip de usach alumnos
     // public static final String BASE_URL = "http://158.170.214.219/api.eyesfood.cl/v1/";
     //URL API LOCAL
-    String BASE_URL = "http://201.189.10.122/api.eyesfood.cl/v1/";
-    String BASE_URL_ADMIN = "http://201.189.10.122/AdminEyesFood/";
+    String BASE_URL = "https://eyesfood.000webhostapp.com/api.eyesfood.cl/v1/";
+    String BASE_URL_PHOTO = "https://eyesfood.000webhostapp.com/api.eyesfood.cl/v1/img/users/";
+    String BASE_URL_ADMIN = "http://eyesfood.000webhostapp.com/AdminEyesFood/";
     String ADDITIVE_URL = "https://cl.openfoodfacts.org/aditivo/";
     //URL API WEB
     //String BASE_URL = "https://eyesfood.000webhostapp.com/api.eyesfood.cl/v1/";
@@ -227,4 +229,12 @@ public interface EyesFoodApi {
     //Retorna las alimentos de una tienda
     @GET("stores/{idTienda}")
     Call<List<FoodStore>> getFoodsStore(@Path("idTienda") String idTienda);
+
+    //Retorna los alimentos aprobados por un experto
+    @GET("experts/{idExperto}/foods")
+    Call<List<Food>> getFoodsExpert(@Path("idExperto") String idExperto);
+
+    //Petición que inserta una consulta
+    @POST("consult")
+    Call<Consult> insertConsult(@Body Consult consulta);
 }

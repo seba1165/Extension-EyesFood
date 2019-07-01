@@ -98,6 +98,17 @@ public class SessionPrefs {
     public String getUserHeight(){
         return mPrefs.getString(PREF_USER_HEIGHT, null);
     }
+    public String getUserEmail(){
+        return mPrefs.getString(PREF_USER_EMAIL, null);
+    }
+
+    public String getUserName(){
+        return mPrefs.getString(PREF_USER_NAME, null)+" "+mPrefs.getString(PREF_USER_SURNAME, null);
+    }
+
+    public String getUserPref(){
+        return mPrefs.getString(PREF_USER_SESSION, null);
+    }
 
     public void setUserHeight(String height) {
         SharedPreferences.Editor editor = mPrefs.edit();

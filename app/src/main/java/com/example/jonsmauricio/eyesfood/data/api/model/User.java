@@ -101,4 +101,32 @@ public class User {
     public void setSession(String session) {
         this.session = session;
     }
+
+    public void setSurName(String surName) {
+        this.surName = surName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public void setReputation(String reputation) {
+        this.reputation = reputation;
+    }
+
+    public void setDateBirth(String dateBirth) {
+        this.dateBirth = dateBirth;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 }

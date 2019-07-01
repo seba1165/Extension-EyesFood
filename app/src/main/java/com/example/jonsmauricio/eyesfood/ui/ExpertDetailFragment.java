@@ -1,12 +1,14 @@
 package com.example.jonsmauricio.eyesfood.ui;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
@@ -27,9 +30,11 @@ import android.widget.Toast;
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.Comment;
+import com.example.jonsmauricio.eyesfood.data.api.model.Consult;
 import com.example.jonsmauricio.eyesfood.data.api.model.Expert;
 import com.example.jonsmauricio.eyesfood.data.api.model.Food;
 import com.example.jonsmauricio.eyesfood.data.api.model.NewFoodBody;
+import com.example.jonsmauricio.eyesfood.data.prefs.SessionPrefs;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -47,8 +52,12 @@ public class ExpertDetailFragment extends DialogFragment {
     final String baseFotoAlimento = EyesFoodApi.BASE_URL+"img/experts/";
     Expert Experto;
     private ImageView expertPhoto;
-    private TextView expertName, expertSpecialty, expertPhone, expertWeb, expertMail, expertAdress, expertDescription;
+    private TextView expertName, expertSpecialty, expertDescription;
     private RatingBar expertRating;
+    Button btFoods, btConsulta;
+    private Retrofit mRestAdapter;
+    private EyesFoodApi mEyesFoodApi;
+    private String userIdFinal;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,11 +82,19 @@ public class ExpertDetailFragment extends DialogFragment {
         expertName = view.findViewById(R.id.tvExpertDetailName);
         expertSpecialty = view.findViewById(R.id.tvExpertDetailSpecialty);
         expertRating = view.findViewById(R.id.rbExpertDetailRating);
-        expertPhone = view.findViewById(R.id.tvExpertPhone);
-        expertWeb = view.findViewById(R.id.tvExpertWeb);
-        expertMail = view.findViewById(R.id.tvExpertMail);
-        expertAdress = view.findViewById(R.id.tvExpertAdress);
         expertDescription = view.findViewById(R.id.tvExpertDetailDescription);
+        /*btFoods = view.findViewById(R.id.btFoods);*/
+        btConsulta = view.findViewById(R.id.btConsulta);
+        userIdFinal = SessionPrefs.get(getActivity()).getUserId();
+
+        mRestAdapter = new Retrofit.Builder()
+                .baseUrl(EyesFoodApi.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        // Crear conexión a la API de EyesFood
+        mEyesFoodApi = mRestAdapter.create(EyesFoodApi.class);
+
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
@@ -86,7 +103,61 @@ public class ExpertDetailFragment extends DialogFragment {
             showExpertData(Experto);
         }
 
+        /*btFoods.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Experto.getFoods()>0){
+
+                }else{
+                    Toast.makeText(getActivity(), "El experto no ha aprobado alimentos", Toast.LENGTH_LONG).show();
+                }
+            }
+        });*/
+
+        btConsulta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(getActivity())
+                        .setIcon(null)
+                        .setTitle(getResources().getString(R.string.title_new_consult_question))
+                        .setMessage(getResources().getString(R.string.message_new_consult_question))
+                        .setPositiveButton(getResources().getString(R.string.possitive_dialog), new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                crearConsulta();
+                            }
+
+                        })
+                        .setNegativeButton(getResources().getString(R.string.negative_dialog), null)
+                        .show();
+            }
+        });
+
         return view;
+    }
+
+    private void crearConsulta() {
+        Call<Consult> call = mEyesFoodApi.insertConsult(new Consult(String.valueOf(Experto.getExpertId()), userIdFinal));
+        call.enqueue(new Callback<Consult>() {
+            @Override
+            public void onResponse(Call<Consult> call, Response<Consult> response) {
+                if (!response.isSuccessful()) {
+                    Log.d("myTag", "Mala respuesta en insertConsult" + response.toString());
+                    return;
+                }
+                else {
+//                    Log.d("myTag", "Mostrar Producto leido");
+//                    progressDialog.setMessage("Cargando Producto");
+                    Toast.makeText(getActivity(), "Su solicitud ha sido creada con exito", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Consult> call, Throwable t) {
+
+            }
+        });
     }
 
     private void showExpertData(Expert experto) {
@@ -97,10 +168,6 @@ public class ExpertDetailFragment extends DialogFragment {
         expertName.setText(experto.getName() + " " + experto.getLastName());
         expertSpecialty.setText("Especialidad: " + experto.getSpecialty());
         expertRating.setRating(experto.getReputation());
-        expertPhone.setText(experto.getPhone());
-        expertWeb.setText(experto.getWebPage());
-        expertMail.setText(experto.getEmail());
-        expertAdress.setText(experto.getAdress());
         expertDescription.setText(experto.getDescription());
     }
 

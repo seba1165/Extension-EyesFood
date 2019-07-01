@@ -21,7 +21,9 @@ import android.widget.ListView;
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
 import com.example.jonsmauricio.eyesfood.data.api.model.Expert;
+import com.example.jonsmauricio.eyesfood.data.api.model.Food;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -97,7 +99,35 @@ public class ExpertsFragment extends DialogFragment {
         });
     }
 
-    public void showListExperts(List<Expert> lista){
+    public void showListExperts(final List<Expert> lista){
+        final ArrayList<Call<List<Food>>> productResponseCalls = new ArrayList<>();
+        for (Expert expert : lista) {
+            productResponseCalls.add(mEyesFoodApi.getFoodsExpert(String.valueOf(expert.getExpertId())));
+        }
+        Log.d("myTag", "En show Experts ");
+        for (final Call<List<Food>> call2 : productResponseCalls){
+            call2.enqueue(new Callback<List<Food>>() {
+                @Override
+                public void onResponse(Call<List<Food>> call, Response<List<Food>> response) {
+                    if (response.isSuccessful()){
+                        List<Food> foods = response.body();
+                        int index = productResponseCalls.indexOf(call2);
+                        lista.get(index).setFoods(foods.size());
+                        if (index==productResponseCalls.size()-1){
+                            showListExpertsFinal(lista);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Food>> call, Throwable t) {
+
+                }
+            });
+        }
+    }
+
+    private void showListExpertsFinal(List<Expert> lista) {
         // Inicializar el adaptador con la fuente de datos.
         adaptadorExpertos = new ExpertsAdapter(getContext(), lista);
         //Relacionando la lista con el adaptador

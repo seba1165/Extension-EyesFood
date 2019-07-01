@@ -2,7 +2,6 @@ package com.example.jonsmauricio.eyesfood.ui;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -16,17 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jonsmauricio.eyesfood.R;
 import com.example.jonsmauricio.eyesfood.data.api.EyesFoodApi;
-import com.example.jonsmauricio.eyesfood.data.api.model.FoodStore;
 import com.example.jonsmauricio.eyesfood.data.api.model.Store;
 import com.squareup.picasso.Picasso;
 

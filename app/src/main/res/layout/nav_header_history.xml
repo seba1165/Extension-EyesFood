@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/side_nav_bar"
@@ -12,15 +13,22 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+<!--    <ImageView
+        android:id="@+id/ivProfile"
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:layout_centerVertical="true"/>
+        tools:srcCompat="@tools:sample/avatars" />-->
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/ivProfile"
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:layout_centerVertical="true"
+        android:paddingTop="@dimen/nav_header_vertical_spacing" />
 
     <TextView
+        android:id="@+id/tvNameProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -28,8 +36,8 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:id="@+id/tvEmailProfile"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="android.studio@android.com" />
 
